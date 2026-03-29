@@ -1,0 +1,723 @@
+# High-value paths for web application fuzzing
+# Admin panels
+/admin
+/administrator
+/admin.php
+/admin/login
+/admin/dashboard
+/wp-admin
+/wp-login.php
+/phpmyadmin
+/phpMyAdmin
+/cpanel
+/panel
+/control
+/controlpanel
+/adminpanel
+/admin_area
+/admin-console
+/backend
+/backoffice
+/manager
+/management
+
+# Config files
+/.env
+/.env.local
+/.env.production
+/config.php
+/config.yml
+/config.yaml
+/config.json
+/configuration.php
+/settings.py
+/settings.php
+/web.config
+/.htaccess
+/app.config
+/database.yml
+/db.config
+
+# Backup files
+/backup
+/backup.zip
+/backup.tar.gz
+/backup.sql
+/db.sql
+/dump.sql
+/database.sql
+/site.zip
+/site.tar.gz
+/www.zip
+/backup.bak
+/config.bak
+/config.php.bak
+/index.php.bak
+/site.bak
+
+# Git/VCS exposure
+/.git
+/.git/HEAD
+/.git/config
+/.git/index
+/.gitignore
+/.svn
+/.svn/entries
+/.hg
+/.hg/hgrc
+/.bzr
+
+# API endpoints
+/api
+/api/v1
+/api/v2
+/api/v3
+/rest
+/rest/v1
+/graphql
+/swagger
+/swagger.json
+/swagger-ui
+/openapi.json
+/api-docs
+/docs
+/documentation
+
+# Logs
+/error.log
+/access.log
+/debug.log
+/app.log
+/server.log
+/error_log
+/access_log
+/logs
+/log
+
+# Framework-specific paths
+# Laravel
+/storage/logs
+/storage/framework
+/.env.example
+/artisan
+
+# Django
+/settings.py
+/urls.py
+/wsgi.py
+/manage.py
+
+# Rails
+/config/database.yml
+/config/secrets.yml
+/Gemfile
+/Gemfile.lock
+
+# Express/Node
+/package.json
+/package-lock.json
+/node_modules
+/.npmrc
+
+# Spring Boot
+/application.properties
+/application.yml
+/actuator
+/actuator/health
+/actuator/env
+/actuator/metrics
+
+# FastAPI
+/docs
+/redoc
+/openapi.json
+
+# Cloud metadata (SSRF targets)
+/.aws
+/.aws/credentials
+/.azure
+/metadata
+/latest/meta-data
+/computeMetadata/v1
+
+# Common files
+/robots.txt
+/sitemap.xml
+/crossdomain.xml
+/security.txt
+/.well-known/security.txt
+/humans.txt
+/favicon.ico
+/apple-touch-icon.png
+
+# Upload directories
+/upload
+/uploads
+/files
+/media
+/images
+/img
+/assets
+/static
+/public
+
+# Database interfaces
+/phpmyadmin
+/phpMyAdmin
+/adminer
+/adminer.php
+/mysql
+/myadmin
+/db
+/database
+
+# Development/Debug
+/debug
+/test
+/tests
+/dev
+/development
+/staging
+/phpinfo.php
+/info.php
+/test.php
+/debug.php
+
+# Authentication
+/login
+/signin
+/signup
+/register
+/logout
+/auth
+/authentication
+/oauth
+/sso
+
+# User data
+/users
+/user
+/profile
+/account
+/dashboard
+/settings
+
+# CMS-specific
+# WordPress
+/wp-content
+/wp-includes
+/wp-json
+/xmlrpc.php
+
+# Joomla
+/administrator
+/components
+/modules
+/plugins
+
+# Drupal
+/user/login
+/admin/config
+/sites/default
+
+# Magento
+/downloader
+/app/etc/local.xml
+
+# Common vulnerabilities
+/shell.php
+/c99.php
+/r57.php
+/webshell.php
+/cmd.php
+/backdoor.php
+
+# Sensitive data
+/passwords.txt
+/users.txt
+/credentials.txt
+/secrets.txt
+/keys.txt
+/private.key
+/id_rsa
+/id_dsa
+
+# Server info
+/server-status
+/server-info
+/status
+/info
+/health
+/metrics
+/stats
+
+# Temporary files
+/tmp
+/temp
+/cache
+/.cache
+/.tmp
+
+# IDE/Editor files
+/.vscode
+/.idea
+/.project
+/.settings
+/nbproject
+
+# Package managers
+/composer.json
+/composer.lock
+/yarn.lock
+/pom.xml
+/build.gradle
+/requirements.txt
+/Pipfile
+/Pipfile.lock
+
+# CI/CD
+/.gitlab-ci.yml
+/.travis.yml
+/Jenkinsfile
+/.circleci
+/.github
+
+# Docker
+/Dockerfile
+/docker-compose.yml
+/.dockerignore
+
+# Kubernetes
+/deployment.yaml
+/service.yaml
+/ingress.yaml
+
+# Monitoring
+/grafana
+/prometheus
+/kibana
+/elasticsearch
+
+# Message queues
+/rabbitmq
+/redis
+/memcached
+
+# Search
+/solr
+/elasticsearch
+/_search
+
+# Admin tools
+/adminer
+/phpliteadmin
+/rockmongo
+/phpredisadmin
+
+# File managers
+/filemanager
+/elfinder
+/tinymce
+
+# Webmail
+/webmail
+/mail
+/roundcube
+/squirrelmail
+
+# Forums
+/forum
+/forums
+/board
+/community
+
+# E-commerce
+/shop
+/store
+/cart
+/checkout
+/payment
+
+# Blog
+/blog
+/posts
+/articles
+/news
+
+# Wiki
+/wiki
+/confluence
+
+# Help/Support
+/help
+/support
+/faq
+/contact
+
+# Analytics
+/analytics
+/tracking
+/stats
+/ga.js
+
+# Social
+/social
+/share
+/like
+/follow
+
+# Mobile
+/mobile
+/m
+/app
+
+# Old/Archived
+/old
+/backup
+/archive
+/legacy
+/deprecated
+
+# Testing
+/test
+/testing
+/qa
+/sandbox
+/demo
+
+# Monitoring endpoints
+/ping
+/healthcheck
+/alive
+/ready
+
+# Error pages
+/404
+/500
+/error
+
+# Redirects
+/redirect
+/goto
+/out
+/link
+
+# Download
+/download
+/downloads
+/files
+/get
+
+# Search
+/search
+/find
+/query
+
+# RSS/Feeds
+/rss
+/feed
+/atom
+
+# Sitemap
+/sitemap
+/sitemap.xml
+/sitemap_index.xml
+
+# Manifest
+/manifest.json
+/browserconfig.xml
+
+# Service worker
+/sw.js
+/service-worker.js
+
+# PWA
+/offline.html
+/offline
+
+# Ads
+/ads
+/advertising
+/banner
+
+# Tracking
+/track
+/pixel
+/beacon
+
+# Webhooks
+/webhook
+/webhooks
+/callback
+
+# Cron
+/cron
+/cron.php
+/cronjob
+
+# Install/Setup
+/install
+/install.php
+/setup
+/setup.php
+/installer
+
+# Upgrade
+/upgrade
+/update
+/patch
+
+# Maintenance
+/maintenance
+/under-construction
+/coming-soon
+
+# License
+/license
+/license.txt
+/LICENSE
+
+# Readme
+/readme
+/readme.txt
+/README.md
+
+# Changelog
+/changelog
+/CHANGELOG.md
+/changes
+
+# Version
+/version
+/version.txt
+/VERSION
+
+# Build
+/build
+/dist
+/release
+
+# Source
+/src
+/source
+/app
+
+# Vendor
+/vendor
+/vendors
+/third-party
+
+# Libraries
+/lib
+/libs
+/library
+/libraries
+
+# Includes
+/inc
+/include
+/includes
+
+# Classes
+/class
+/classes
+
+# Functions
+/func
+/functions
+
+# Helpers
+/helper
+/helpers
+
+# Utils
+/util
+/utils
+/utilities
+
+# Common
+/common
+/shared
+/core
+
+# Modules
+/module
+/modules
+/mod
+
+# Plugins
+/plugin
+/plugins
+/extensions
+
+# Themes
+/theme
+/themes
+/templates
+/template
+
+# Layouts
+/layout
+/layouts
+
+# Views
+/view
+/views
+
+# Controllers
+/controller
+/controllers
+
+# Models
+/model
+/models
+
+# Services
+/service
+/services
+
+# Repositories
+/repository
+/repositories
+/repo
+
+# Middleware
+/middleware
+
+# Routes
+/route
+/routes
+
+# Config
+/config
+/configuration
+/conf
+
+# Data
+/data
+/db
+/database
+
+# Migrations
+/migration
+/migrations
+
+# Seeds
+/seed
+/seeds
+/fixtures
+
+# Factories
+/factory
+/factories
+
+# Jobs
+/job
+/jobs
+/queue
+
+# Events
+/event
+/events
+
+# Listeners
+/listener
+/listeners
+
+# Notifications
+/notification
+/notifications
+
+# Mail
+/mail
+/email
+/emails
+
+# SMS
+/sms
+/text
+
+# Push
+/push
+/notification
+
+# Localization
+/lang
+/language
+/locale
+/i18n
+/l10n
+
+# Translations
+/translation
+/translations
+
+# Resources
+/resource
+/resources
+
+# Public
+/public
+/www
+/htdocs
+/wwwroot
+
+# Private
+/private
+/protected
+/secure
+
+# Internal
+/internal
+/intranet
+
+# External
+/external
+/third-party
+
+# Partner
+/partner
+/partners
+/affiliate
+
+# Reseller
+/reseller
+/resellers
+
+# Wholesale
+/wholesale
+/b2b
+
+# Retail
+/retail
+/b2c
+
+# Enterprise
+/enterprise
+/business
+
+# Personal
+/personal
+/individual
+
+# Professional
+/professional
+/pro
+
+# Premium
+/premium
+/vip
+
+# Trial
+/trial
+/demo
+/sample
+
+# Free
+/free
+/basic
+
+# Paid
+/paid
+/subscription
+/billing
