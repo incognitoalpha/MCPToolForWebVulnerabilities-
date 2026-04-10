@@ -1,16 +1,15 @@
 <p align="center">
-  <h1 align="center">🛡️ PenTest MCP Server</h1>
+  <h1 align="center">🛡️ PenTest AI CLI</h1>
   <p align="center">
-    <strong>AI-Powered Penetration Testing via Model Context Protocol</strong>
+    <strong>AI-Powered Penetration Testing with Natural Language</strong>
   </p>
   <p align="center">
-    An MCP server that integrates 30+ security tools with Groq LLM analysis,<br/>
-    designed to run natively inside <strong>Claude Desktop</strong>.
+    A standalone CLI tool that integrates 30+ security tools with Gemini AI analysis.<br/>
+    Ask security questions in plain English and get professional reports.
   </p>
   <p align="center">
     <img src="https://img.shields.io/badge/python-3.11+-blue?logo=python&logoColor=white" alt="Python 3.11+"/>
-    <img src="https://img.shields.io/badge/MCP-v1.26-green?logo=data:image/svg+xml;base64,..." alt="MCP"/>
-    <img src="https://img.shields.io/badge/LLM-Groq%20Llama%203.1-orange?logo=meta" alt="Groq"/>
+    <img src="https://img.shields.io/badge/LLM-Gemini%20Flash%20Lite-orange?logo=google" alt="Gemini"/>
     <img src="https://img.shields.io/badge/license-MIT-lightgrey" alt="License"/>
   </p>
 </p>
@@ -21,13 +20,17 @@
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│                    CLAUDE DESKTOP (UI)                    │
-│  User asks: "Run a medium scan on example.com"           │
+│  $ pentest ask --query "scan for SQLi and XSS" \         │
+│                --target http://localhost:3000 --consent  │
 └──────────────────┬───────────────────────────────────────┘
-                   │ MCP Protocol (JSON-RPC over stdio)
+                   │ Direct Python execution
                    ▼
 ┌──────────────────────────────────────────────────────────┐
-│               PENTEST MCP SERVER (Python)                │
+│            GEMINI-POWERED AGENT (Python)                 │
+│                                                          │
+│  Phase 1: PLAN    → LLM selects tools from query        │
+│  Phase 2: EXECUTE → Runs tools, collects findings       │
+│  Phase 3: REPORT  → LLM generates professional report   │
 │                                                          │
 │  ┌─────────────┐  ┌──────────────┐  ┌────────────────┐  │
 │  │   Session    │  │  Scan Mode   │  │   Tool         │  │
@@ -46,8 +49,8 @@
 │                          │                               │
 │                          ▼                               │
 │              ┌──────────────────────┐                    │
-│              │    GROQ API          │                    │
-│              │  (Llama 3.1 70B)    │                    │
+│              │    GEMINI API        │                    │
+│              │  (Flash Lite)       │                    │
 │              │  Triage · Analysis  │                    │
 │              │  CVSS · Reporting   │                    │
 │              └──────────────────────┘                    │
@@ -58,10 +61,11 @@
 
 | Feature | Description |
 |---|---|
+| **Natural Language Interface** | Ask security questions in plain English — AI selects and runs appropriate tools |
 | **3 Scan Modes** | Quick (5-10 min), Medium (15-30 min), Extensive (45+ min) — each with distinct depth and AI analysis |
 | **30+ Security Tools** | nmap, sqlmap, nuclei, ffuf, dalfox, nikto, wafw00f, subfinder, sslyze, and more |
-| **AI-Powered Analysis** | Groq LLM (Llama 3.1 70B) performs vulnerability triage, CVSS scoring, and generates executive reports |
-| **Claude Desktop Native** | Runs as an MCP server — talk to it in natural language, reports render directly in chat |
+| **AI-Powered Analysis** | Gemini AI (Flash Lite) performs vulnerability triage, CVSS scoring, and generates executive reports |
+| **Automated Tool Selection** | `pentest ask` command for LLM-driven tool planning and execution |
 | **Session Management** | Track, pause, and resume security assessments across multiple targets |
 | **OWASP Top 10 Coverage** | Systematic scanning mapped to OWASP 2021 categories |
 | **Smart Fallbacks** | If a professional tool isn't installed, Python-native implementations fill the gap |
@@ -84,14 +88,13 @@
 
 - **Python 3.11+**
 - **[uv](https://docs.astral.sh/uv/)** (Python package manager)
-- **[Groq API Key](https://console.groq.com/keys)** (free tier available)
-- **Claude Desktop** (for the MCP integration)
+- **[Gemini API Key](https://aistudio.google.com/apikey)** (free tier available)
 
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/yourusername/MCPToolForWebVulnerabilities
-cd MCPToolForWebVulnerabilities
+git clone https://github.com/yourusername/pentest-ai-cli
+cd pentest-ai-cli
 
 # Install dependencies
 uv sync
@@ -103,10 +106,10 @@ uv sync
 cp .env.example .env
 ```
 
-Edit `.env` and add your Groq API key:
+Edit `.env` and add your Gemini API key:
 
 ```env
-GROQ_API_KEY=gsk_your_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
 ### 3. Install Security Tools (Optional)
@@ -129,34 +132,13 @@ go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 
 > **Tip:** Run `session_init` to see which tools are detected on your system.
 
-### 4. Connect to Claude Desktop
+### 4. Start Scanning!
 
-Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "pentest-mcp": {
-      "command": "/FULL/PATH/TO/pentest-mcp/.venv/bin/python",
-      "args": ["/FULL/PATH/TO/pentest-mcp/run_mcp_server.py"],
-      "env": {
-        "GROQ_API_KEY": "gsk_your_key_here"
-      }
-    }
-  }
-}
-```
-
-> Replace `/FULL/PATH/TO/pentest-mcp` with your actual project path.
-
-### 5. Restart Claude Desktop
-
-Quit and reopen Claude Desktop. Look for the 🔌 icon showing `pentest-mcp` as connected.
-
-### 6. Start Scanning!
-
-```
-Run a quick scan on https://example.com with consent confirmed
+```bash
+pentest ask \
+  --query "run a quick security scan" \
+  --target https://example.com \
+  --consent
 ```
 
 ## 🎯 Scan Modes
@@ -248,54 +230,66 @@ The server integrates **30+ security tools** with automatic detection. If a tool
 
 ## 💬 Usage Examples
 
-See [`CLAUDE_PROMPTS.md`](CLAUDE_PROMPTS.md) for a full list of example prompts. Here are some highlights:
+The `pentest ask` command uses Gemini AI to automatically plan and execute security scans based on natural language queries.
 
-### Unified Scanning
-```
-Run a quick triage scan on example.com. Generate a report and tell me the findings.
-Perform an extensive scan on example.com including deep recon and directory fuzzing.
-```
-
-### Individual Tools
-```
-What subdomains can you find for example.com? Run a discovery scan.
-Run a port scan on example.com and fingerprint the web technologies.
-Check for Cross-Site Scripting (XSS) on example.com/search.
+**Quick vulnerability scan**
+```bash
+pentest ask \
+  --query "scan for SQL injection and XSS vulnerabilities" \
+  --target http://localhost:3000 \
+  --consent
 ```
 
-### AI Analysis
+**Full OWASP Top 10 audit**
+```bash
+pentest ask \
+  --query "perform a comprehensive OWASP Top 10 security audit" \
+  --target https://example.com \
+  --consent
 ```
-Analyze our current session findings. Are there any critical risks?
-Generate a final markdown report for the current session.
-Give me a CVSS 3.1 score for the SQLi vulnerability we just found.
+
+**Reconnaissance only**
+```bash
+pentest ask \
+  --query "enumerate subdomains and check for exposed sensitive files" \
+  --target example.com \
+  --consent
 ```
+
+**Custom report path**
+```bash
+pentest ask \
+  --query "check security headers and TLS configuration" \
+  --target https://example.com \
+  --consent \
+  --output security-audit-2024.md
+```
+
+> 📖 Full Documentation: See [CLI_USAGE_GUIDE.md](CLI_USAGE_GUIDE.md) for detailed usage guide, examples, and troubleshooting.
 
 ## 📁 Project Structure
 
 ```
-pentest-mcp/
-├── run_mcp_server.py          # Entry point — launches MCP server
+pentest-ai/
 ├── pentest_mcp/
-│   ├── server.py              # MCP tool definitions & request handling
 │   ├── scan_modes.py          # Quick/Medium/Extensive scan orchestration
-│   ├── prompts.py             # Severity-specific Groq system prompts
-│   ├── groq_client.py         # Groq API integration
+│   ├── agent.py               # Standalone CLI orchestrator
 │   ├── session.py             # Session state management
 │   ├── models.py              # Pydantic data models
 │   ├── config.py              # Environment & settings
-│   ├── cli.py                 # CLI interface (alternative to MCP)
-│   ├── risk_scorer.py         # Risk scoring engine
-│   ├── command_chain.py       # Tool execution chaining
+│   ├── cli.py                 # CLI interface (includes "ask" command)
+│   ├── cli_ui.py              # Beautiful CLI UI components
 │   ├── tools/
 │   │   ├── __init__.py        # Python-native security tools
-│   │   └── professional.py    # External tool wrappers (nmap, sqlmap, etc.)
+│   │   ├── professional.py    # External tool wrappers (nmap, sqlmap, etc.)
+│   │   └── tool_registry.py   # Tool execution and result processing
 │   └── utils/
 │       └── sanitizer.py       # Input validation & sanitization
 ├── tests/
-│   └── test_session.py        # Session management tests
+│   └── test_system.py         # System tests
 ├── wordlists/                 # Fuzzing wordlists for ffuf/gobuster
 ├── reports/                   # Generated scan reports (Markdown)
-├── CLAUDE_PROMPTS.md          # Example prompts for Claude Desktop
+├── CLI_USAGE_GUIDE.md         # Example prompts and detailed usage guide
 ├── pyproject.toml             # Project dependencies & metadata
 ├── Makefile                   # Development shortcuts
 ├── install_tools.sh           # Security tool installer script
@@ -308,16 +302,17 @@ pentest-mcp/
 
 | Variable | Description | Default |
 |---|---|---|
-| `GROQ_API_KEY` | Your Groq API key | Required |
-| `GROQ_MODEL` | LLM model for analysis | `llama-3.1-70b-versatile` |
-| `GROQ_MAX_TOKENS` | Max response tokens | `8192` |
-| `GROQ_TEMPERATURE` | LLM temperature | `0.2` |
-| `SESSION_DIR` | Session storage path | `~/.pentest-mcp/sessions` |
+| `GEMINI_API_KEY` | Your Gemini API key | Required |
+| `GEMINI_MODEL` | LLM model for analysis | `gemini-flash-lite-latest` |
+| `GEMINI_MAX_TOKENS` | Max response tokens | `8192` |
+| `GEMINI_TEMPERATURE` | LLM temperature | `0.2` |
+| `SESSION_DIR` | Session storage path | `~/.pentest-ai/sessions` |
 | `LOG_LEVEL` | Logging verbosity | `INFO` |
+| `AGENT_MAX_TOOLS` | Max tools per `pentest ask` run | `10` |
 
 ### AI Analysis Pipeline
 
-Each scan mode uses **distinct Groq system prompts** calibrated to the scan depth:
+Each scan mode uses **distinct Gemini AI prompts** calibrated to the scan depth:
 
 - **Quick**: Concise triage — focuses only on critical/high severity findings
 - **Medium**: OWASP Top 10 analysis with balanced risk assessment and remediation
@@ -325,28 +320,16 @@ Each scan mode uses **distinct Groq system prompts** calibrated to the scan dept
 
 ## 🔍 Troubleshooting
 
-### Server Not Connecting
-```bash
-# Check Claude Desktop logs
-tail -f ~/Library/Logs/Claude/mcp*.log
-
-# Verify the server starts manually
-/path/to/pentest-mcp/.venv/bin/python /path/to/pentest-mcp/run_mcp_server.py
-```
-
-### JSON Parse Errors in Logs
-The MCP protocol uses stdout for JSON-RPC. If you see parse errors, ensure no libraries are logging to stdout. The server is pre-configured to redirect all logs to stderr.
-
 ### `Read-only file system` Error
 Reports are saved to `<project_root>/reports/`. Ensure the project directory is writable.
 
-### Groq API Errors
-- Verify your API key: `echo $GROQ_API_KEY`
-- Check rate limits at [console.groq.com](https://console.groq.com)
-- The server continues scanning even if Groq is unavailable — raw tool output is still returned
+### Gemini API Errors
+- Verify your API key: `echo $GEMINI_API_KEY`
+- Check rate limits at [aistudio.google.com](https://aistudio.google.com)
+- The server continues scanning even if Gemini is unavailable — raw tool output is still returned
 
 ### Tools Not Detected
-Run `session_init` to see which tools are available. Install missing tools via Homebrew or your package manager. Python fallbacks cover core functionality even without external tools.
+Install missing tools via Homebrew or your package manager. Python fallbacks cover core functionality even without external tools.
 
 ## ⚠️ Security Notice
 
@@ -364,5 +347,5 @@ See [LICENSE](LICENSE) for details.
 ---
 
 <p align="center">
-  <strong>Built with</strong> 🐍 Python · 🤖 MCP Protocol · 🧠 Groq AI · 🛡️ OWASP Standards
+  <strong>Built with</strong> 🐍 Python · 🧠 Gemini AI · 🛡️ OWASP Standards
 </p>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>VulnLab - Home</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: #1a1a2e; color: #eee; }
+    .nav { background: #16213e; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+    .nav a { color: #e94560; text-decoration: none; margin-left: 20px; }
+    .nav .brand { font-size: 1.5em; font-weight: bold; color: #e94560; }
+    .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+    .post-card { background: #16213e; border-radius: 8px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #e94560; }
+    .post-card h2 a { color: #eee; text-decoration: none; }
+    .post-card .meta { color: #888; font-size: 0.9em; margin-top: 5px; }
+    .search-bar { margin-bottom: 30px; }
+    .search-bar form { display: flex; gap: 10px; }
+    .search-bar input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #333; background: #0f3460; color: #eee; font-size: 1em; }
+    .search-bar button { padding: 12px 24px; background: #e94560; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+    .warning-banner { background: #e94560; color: #fff; text-align: center; padding: 8px; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <div class="warning-banner">⚠️ DELIBERATELY VULNERABLE - FOR TESTING ONLY ⚠️</div>
+  <nav class="nav">
+    <span class="brand">🔓 VulnLab</span>
+    <div>
+      <a href="/">Home</a>
+      <a href="/search?q=">Search</a>
+      <a href="/tools/ping">Ping Tool</a>
+      <a href="/admin">Admin</a>
+      <% if (user) { %>
+        <a href="/profile/<%= user.id %>">Profile</a>
+        <a href="/logout">Logout (<%= user.username %>)</a>
+      <% } else { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      <% } %>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="search-bar">
+      <form action="/search" method="GET">
+        <input type="text" name="q" placeholder="Search posts..." value="<%= query %>">
+        <button type="submit">Search</button>
+      </form>
+    </div>
+    <h1 style="margin-bottom: 20px;">Recent Posts</h1>
+    <% posts.forEach(post => { %>
+      <div class="post-card">
+        <h2><a href="/post/<%= post.id %>"><%= post.title %></a></h2>
+        <p style="margin-top: 10px;"><%= post.content.substring(0, 200) %></p>
+        <div class="meta">By <%= post.username %> | <%= post.created_at %></div>
+      </div>
+    <% }); %>
+  </div>
+</body>
+</html>

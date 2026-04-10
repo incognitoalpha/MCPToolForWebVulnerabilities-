@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login - VulnLab</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: #1a1a2e; color: #eee; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .login-box { background: #16213e; padding: 40px; border-radius: 12px; width: 400px; }
+    .login-box h1 { color: #e94560; margin-bottom: 20px; }
+    .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #333; background: #0f3460; color: #eee; font-size: 1em; }
+    .login-box button { width: 100%; padding: 12px; background: #e94560; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 1em; }
+    .error { background: #ff4444; color: #fff; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+    a { color: #e94560; }
+    .hint { margin-top: 15px; font-size: 0.85em; color: #888; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h1>🔓 Login</h1>
+    <% if (error) { %>
+      <!-- VULNERABILITY: Error message may expose SQL details -->
+      <div class="error"><%- error %></div>
+    <% } %>
+    <!-- VULNERABILITY: No CSRF token on form -->
+    <form method="POST" action="/login">
+      <input type="hidden" name="redirect" value="<%= redirect %>">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+    <p style="margin-top: 15px; text-align: center;"><a href="/register">Create account</a></p>
+    <div class="hint">
+      <p>💡 Try: admin / admin123</p>
+      <p>💡 Or try SQL Injection: <code>' OR '1'='1</code></p>
+    </div>
+  </div>
+</body>
+</html>

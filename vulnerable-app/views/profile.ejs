@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Profile - VulnLab</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: #1a1a2e; color: #eee; }
+    .nav { background: #16213e; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+    .nav a { color: #e94560; text-decoration: none; margin-left: 20px; }
+    .nav .brand { font-size: 1.5em; font-weight: bold; color: #e94560; }
+    .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+    .profile-card { background: #16213e; border-radius: 8px; padding: 30px; border-top: 4px solid #e94560; }
+    .profile-card h1 { margin-bottom: 20px; color: #e94560; }
+    .profile-row { margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+    .label { font-weight: bold; color: #888; width: 120px; display: inline-block; }
+    .bio-editor { margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; }
+    textarea { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #333; background: #0f3460; color: #eee; font-size: 1em; margin-bottom: 10px; height: 100px; }
+    button { padding: 12px 24px; background: #e94560; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+    .warning-banner { background: #e94560; color: #fff; text-align: center; padding: 8px; font-size: 0.85em; }
+    .secret { background: #333; padding: 2px 5px; border-radius: 3px; font-family: monospace; color: #ffeb3b; }
+  </style>
+</head>
+<body>
+  <div class="warning-banner">⚠️ DELIBERATELY VULNERABLE - FOR TESTING ONLY ⚠️</div>
+  <nav class="nav">
+    <span class="brand">🔓 VulnLab</span>
+    <div>
+      <a href="/">Home</a>
+      <a href="/search?q=">Search</a>
+      <a href="/tools/ping">Ping Tool</a>
+      <a href="/admin">Admin</a>
+      <% if (user) { %>
+        <a href="/profile/<%= user.id %>">Profile</a>
+        <a href="/logout">Logout (<%= user.username %>)</a>
+      <% } else { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      <% } %>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="profile-card">
+      <h1>User Profile: <%= profile.username %></h1>
+      
+      <div class="profile-row">
+        <span class="label">ID:</span>
+        <span><%= profile.id %></span>
+      </div>
+      
+      <div class="profile-row">
+        <span class="label">Username:</span>
+        <span><%= profile.username %></span>
+      </div>
+      
+      <!-- VULNERABILITY: Information Disclosure (Email and API Key) -->
+      <div class="profile-row">
+        <span class="label">Email:</span>
+        <span><%= profile.email %></span>
+      </div>
+      
+      <div class="profile-row">
+        <span class="label">API Key:</span>
+        <span class="secret"><%= profile.api_key %></span>
+      </div>
+      
+      <div class="profile-row">
+        <span class="label">Role:</span>
+        <span style="text-transform: capitalize;"><%= profile.role %></span>
+      </div>
+      
+      <!-- VULNERABILITY: Stored XSS (Bio reflected without encoding) -->
+      <div class="profile-row">
+        <span class="label">Bio:</span>
+        <div style="margin-top: 10px; line-height: 1.6;">
+          <%- profile.bio || '<i>No bio yet</i>' %>
+        </div>
+      </div>
+      
+      <% if (user && user.id === profile.id) { %>
+        <div class="bio-editor">
+          <h3>Update Bio</h3>
+          <!-- VULNERABILITY: No CSRF protection on update -->
+          <form action="/profile/update" method="POST">
+            <textarea name="bio" placeholder="Tell us about yourself..."><%= profile.bio %></textarea>
+            <button type="submit">Update Profile</button>
+          </form>
+          <p style="margin-top: 10px; font-size: 0.8em; color: #888;">💡 You can use HTML in your bio!</p>
+        </div>
+      <% } %>
+    </div>
+    
+    <div style="margin-top: 20px; text-align: center; color: #888; font-size: 0.9em;">
+      💡 Profile ID is numeric. Try incrementing it to see other users. (IDOR)
+    </div>
+  </div>
+</body>
+</html>

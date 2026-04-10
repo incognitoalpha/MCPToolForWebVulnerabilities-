@@ -1,1 +1,1 @@
-"""Tests for pentest MCP server."""
+"""Tests for pentest AI CLI."""

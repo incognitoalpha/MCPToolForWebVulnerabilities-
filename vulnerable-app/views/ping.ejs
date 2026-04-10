@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Network Tools - VulnLab</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: #1a1a2e; color: #eee; }
+    .nav { background: #16213e; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+    .nav a { color: #e94560; text-decoration: none; margin-left: 20px; }
+    .nav .brand { font-size: 1.5em; font-weight: bold; color: #e94560; }
+    .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+    .card { background: #16213e; border-radius: 8px; padding: 30px; border-top: 4px solid #e94560; }
+    .card h1 { margin-bottom: 20px; color: #e94560; }
+    .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+    input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #333; background: #0f3460; color: #eee; font-size: 1em; }
+    button { padding: 12px 24px; background: #e94560; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+    .output-box { background: #000; color: #00ff00; padding: 20px; border-radius: 6px; margin-top: 20px; font-family: 'Courier New', Courier, monospace; white-space: pre-wrap; word-break: break-all; min-height: 100px; border: 1px solid #333; }
+    .warning-banner { background: #e94560; color: #fff; text-align: center; padding: 8px; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <div class="warning-banner">⚠️ DELIBERATELY VULNERABLE - FOR TESTING ONLY ⚠️</div>
+  <nav class="nav">
+    <span class="brand">🔓 VulnLab</span>
+    <div>
+      <a href="/">Home</a>
+      <a href="/search?q=">Search</a>
+      <a href="/tools/ping">Ping Tool</a>
+      <a href="/admin">Admin</a>
+      <% if (user) { %>
+        <a href="/profile/<%= user.id %>">Profile</a>
+        <a href="/logout">Logout (<%= user.username %>)</a>
+      <% } else { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      <% } %>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="card">
+      <h1>🌐 Network Diagnostics: Ping</h1>
+      <p style="margin-bottom: 20px; color: #888;">Test connectivity to a remote host. Enter an IP address or hostname.</p>
+      
+      <form action="/tools/ping" method="POST">
+        <div class="input-group">
+          <input type="text" name="host" placeholder="e.g., 8.8.8.8" value="<%= host %>" required>
+          <button type="submit">Run Ping</button>
+        </div>
+      </form>
+      
+      <% if (output) { %>
+        <div class="output-box"><%= output %></div>
+      <% } %>
+      
+      <div style="margin-top: 30px; font-size: 0.9em; color: #888; border-top: 1px solid #333; padding-top: 20px;">
+        <p><b>Usage Instructions:</b></p>
+        <p style="margin-top: 5px;">This tool runs the standard <code>ping -c 3 [host]</code> command and displays the output.</p>
+        <p style="margin-top: 5px; color: #e94560;">💡 <b>Hint:</b> Try adding a semicolon and another command, like <code>8.8.8.8; ls -la</code>. (Command Injection)</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,7 +1,7 @@
 .PHONY: help install test clean dev-install verify lint format
 
 help:
-	@echo "Pentest MCP Server - Available Commands"
+	@echo "Pentest AI CLI - Available Commands"
 	@echo "========================================"
 	@echo "make install      - Install package"
 	@echo "make dev-install  - Install with dev dependencies"
@@ -14,7 +14,7 @@ help:
 	@echo "Quick Start:"
 	@echo "  1. make dev-install"
 	@echo "  2. cp .env.example .env"
-	@echo "  3. Edit .env and add GROQ_API_KEY"
+	@echo "  3. Edit .env and add GEMINI_API_KEY"
 	@echo "  4. make verify"
 
 install:
@@ -49,8 +49,8 @@ clean:
 	find . -type f -name "*.pyc" -delete
 
 # Development helpers
-run-server:
-	pentest-mcp-server
+run-cli:
+	pentest --help
 
 demo:
 	@echo "Creating demo session..."
