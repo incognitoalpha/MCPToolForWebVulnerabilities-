@@ -99,17 +99,8 @@ Output shows:
 - Timestamp
 - Number of findings
 
-### `pentest report` - Generate Reports
-
-Generate detailed security reports from previous scans.
-
-```bash
-# Generate report for specific session
-pentest report --session <SESSION_ID> --format html
-
-# Generate report for latest scan
-pentest report --format html
-```
+Reports are automatically generated during scans and saved to:
+`~/.pentest-mcp/sessions/<session_id>/report.md`
 
 ## Individual Security Tools
 
@@ -405,16 +396,14 @@ When preset modes don't match your needs, use `pentest ask`:
 pentest ask --query "test authentication bypass and session management" --target http://localhost:3001 --consent
 ```
 
-### 4. Generate Reports for Documentation
+### 4. Review Reports for Documentation
 
-Always generate reports for compliance and documentation:
+All scans automatically generate professional markdown reports:
 
 ```bash
-# HTML report for stakeholders
-pentest run --target http://localhost:3001 --mode medium --consent --format html
-
-# JSON report for automation
-pentest run --target http://localhost:3001 --mode medium --consent --format json
+# Reports saved to: ~/.pentest-mcp/sessions/<session_id>/report.md
+# View your scan history
+pentest history
 ```
 
 ### 5. Review Session History
@@ -477,7 +466,7 @@ Ensure you have authorization to test the target. The `--consent` flag is requir
 
 ```bash
 # Full web app security test
-pentest run --target http://localhost:3001 --mode extensive --consent --format html
+pentest run --target http://localhost:3001 --mode extensive --consent
 ```
 
 ### API Security Testing
