@@ -61,7 +61,8 @@ yarn-error.log*
 .npm/
 
 # Reports - Generated scan reports (may contain sensitive data)
-reports/
+reports/*
+!reports/report.example.md
 *.log
 vulnerable-app/server_log.txt
 vulnerable-app/server_output.log
