@@ -33,11 +33,12 @@ ENV/
 *.swo
 *~
 
-# Environment
+# Environment - NEVER commit API keys
 .env
 .env.local
 .env.save
 .env.backup
+pentest_mcp/.env
 
 # Testing
 .pytest_cache/
@@ -59,22 +60,26 @@ yarn-debug.log*
 yarn-error.log*
 .npm/
 
-# Local Reports & Logs
+# Reports - Generated scan reports (may contain sensitive data)
 reports/
 *.log
 vulnerable-app/server_log.txt
 vulnerable-app/server_output.log
 
-# Agent & Skill data
+# Agent & Skill data - User-specific configurations
 .agents/
 skills-lock.json
 
 # Tool data
 tmp/
-.pentest-mcp/
 wordlists/common.txt
 
-# Environment
-.env
-.env.local
-pentest_mcp/.env
+# Sensitive files - NEVER commit
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+credentials.json
+secrets.json
+api_keys.txt

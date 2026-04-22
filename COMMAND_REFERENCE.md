@@ -16,9 +16,6 @@ pentest ask --query "scan for XSS and SQL injection" --target http://localhost:3
 
 # View scan history
 pentest history
-
-# Generate HTML report
-pentest run --target http://localhost:3001 --mode medium --consent --format html
 ```
 
 ## Core Commands
@@ -29,7 +26,7 @@ Execute predefined security scans with optimized tool combinations.
 
 **Syntax:**
 ```bash
-pentest run --target <URL> --mode <MODE> --consent [--format <FORMAT>]
+pentest run --target <URL> --mode <MODE> --consent [--output <PATH>]
 ```
 
 **Scan Modes:**
@@ -52,10 +49,10 @@ pentest run --target http://localhost:3001 --mode extensive --consent
 ```
 Tools: Medium scan + ffuf_scan, subdomain_discovery, additional fuzzing
 
-**Output Formats:**
-- `--format text` (default) - Terminal-friendly output
-- `--format json` - Machine-readable JSON
-- `--format html` - Interactive HTML report
+**Output:**
+- All reports generated as **Markdown** with CVE enrichment
+- Saved to `~/.pentest-mcp/sessions/<session_id>/report.md`
+- Professional format with executive summary, findings, remediation roadmap
 
 ### `pentest ask` - AI-Powered Custom Scans
 
@@ -63,7 +60,7 @@ Use natural language to describe your security testing needs. The AI selects app
 
 **Syntax:**
 ```bash
-pentest ask --query "<DESCRIPTION>" --target <URL> --consent [--format <FORMAT>]
+pentest ask --query "<DESCRIPTION>" --target <URL> --consent [--output <PATH>]
 ```
 
 **Examples:**
@@ -302,7 +299,7 @@ Create `.env` file in project root:
 
 ```bash
 # Required: Gemini API key for AI features
-GEMINI_API_KEY=your_api_key_here
+GEMINI_API_KEY=your_key_here
 
 # Optional: Gemini model (default: gemini-2.0-flash-exp)
 GEMINI_MODEL=gemini-2.0-flash-exp
@@ -327,61 +324,48 @@ agent_timeout: int = 300
 gemini_model: str = "gemini-2.0-flash-exp"
 ```
 
-## Output Formats
+## Report Format
 
-### Text Format (Default)
+All reports are generated as **professional markdown** with CVE enrichment.
 
-Human-readable terminal output with color coding:
-- 🔴 Critical findings
-- 🟠 High severity
-- 🟡 Medium severity
-- 🔵 Low severity
-- ⚪ Informational
+### Report Structure
 
-### JSON Format
+1. **Executive Summary** - Business impact and risk assessment for C-level executives
+2. **Key Findings Table** - Severity breakdown with visual indicators (🔴🟠🟡🔵⚪)
+3. **CVE Analysis** - Automatic CVE enrichment with CVSS scores and patch links
+4. **Detailed Vulnerability Analysis** - Each finding with:
+   - Description and root cause
+   - Technical details and evidence
+   - Business impact and attack scenarios
+   - Specific remediation steps with effort estimates
+   - CVE references with NVD links
+5. **Risk Assessment Matrix** - Overall security posture rating
+6. **Prioritized Remediation Roadmap** - Phased approach with timelines
+7. **Technical Appendix** - Raw tool outputs and evidence
 
-Machine-readable structured data:
+### CVE Enrichment
 
-```bash
-pentest run --target http://localhost:3001 --mode quick --consent --format json > results.json
+Findings are automatically enriched with CVE data from the NVD API:
+
+- **CVE ID** with direct links to https://nvd.nist.gov/vuln/detail/[CVE-ID]
+- **CVSS Score** highlighted if >= 7.0 (High/Critical)
+- **Description** of the vulnerability
+- **Patch Availability** with vendor advisory links
+- **Published Date** for timeline context
+
+Example CVE section in report:
+
+```markdown
+### 🔍 Related CVEs:
+
+- **CVE-2023-12345** (CVSS: 9.8)
+  Critical remote code execution vulnerability in Apache 2.4.49
+  [Patch Available](https://httpd.apache.org/security/vulnerabilities_24.html)
 ```
 
-Schema:
-```json
-{
-  "session_id": "abc123",
-  "target": "http://localhost:3001",
-  "findings": [
-    {
-      "tool": "xss_scan",
-      "severity": "high",
-      "title": "XSS Vulnerability Found",
-      "description": "...",
-      "evidence": "...",
-      "remediation": "..."
-    }
-  ],
-  "metadata": {
-    "duration": "120s",
-    "tools_used": ["xss_scan", "sqli_scan"]
-  }
-}
-```
+### Report Location
 
-### HTML Format
-
-Interactive web-based report with:
-- Executive summary
-- Findings by severity
-- Detailed vulnerability information
-- Remediation recommendations
-- Technical evidence
-
-```bash
-pentest run --target http://localhost:3001 --mode medium --consent --format html
-```
-
-Report saved to `reports/` directory.
+Reports are saved to: `~/.pentest-mcp/sessions/<session_id>/report.md`
 
 ## Best Practices
 
