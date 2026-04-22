@@ -107,10 +107,10 @@ pentest ask --query "comprehensive security audit" --target http://localhost:300
 pentest ask --query "check SSL/TLS configuration" --target http://localhost:3001 --consent
 ```
 
-### `pentest history` - View Scan History
+### `pentest session list` - View Scan History
 
 ```bash
-pentest history
+pentest session list
 ```
 
 ### Individual Tools

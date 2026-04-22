@@ -15,7 +15,7 @@ pentest run --target http://localhost:3001 --mode quick --consent
 pentest ask --query "scan for XSS and SQL injection" --target http://localhost:3001 --consent
 
 # View scan history
-pentest history
+pentest session list
 ```
 
 ## Core Commands
@@ -84,12 +84,12 @@ pentest ask --query "identify technologies and frameworks used" --target http://
 
 **Performance Tip:** For common patterns like "quick scan" or "medium scan", the AI uses a query cache that's 1.6M times faster than full AI planning.
 
-### `pentest history` - View Scan History
+### `pentest session list` - View Scan History
 
 List all previous security scans with session IDs and timestamps.
 
 ```bash
-pentest history
+pentest session list
 ```
 
 Output shows:
@@ -101,6 +101,22 @@ Output shows:
 
 Reports are automatically generated during scans and saved to:
 `~/.pentest-mcp/sessions/<session_id>/report.md`
+
+### `pentest session status` - Check Session Status
+
+View details of a specific session.
+
+```bash
+pentest session status --session <SESSION_ID>
+```
+
+### `pentest report generate` - Generate Report
+
+Generate a detailed report for a specific session.
+
+```bash
+pentest report generate --session <SESSION_ID>
+```
 
 ## Individual Security Tools
 
@@ -403,7 +419,7 @@ All scans automatically generate professional markdown reports:
 ```bash
 # Reports saved to: ~/.pentest-mcp/sessions/<session_id>/report.md
 # View your scan history
-pentest history
+pentest session list
 ```
 
 ### 5. Review Session History
@@ -411,7 +427,7 @@ pentest history
 Track your testing progress with session history:
 
 ```bash
-pentest history
+pentest session list
 ```
 
 ## Troubleshooting
