@@ -169,6 +169,68 @@ brew install nmap sqlmap ffuf nuclei nikto gobuster testssl
 apt-get install nmap sqlmap nikto
 ```
 
+### Local Model Setup (Optional - Enhanced Report Quality)
+
+PenTest AI v3.0 uses a dual-LLM architecture: Gemini handles tool orchestration and analysis, while a fine-tuned local model generates consistently formatted reports. This improves report quality and reduces API costs.
+
+#### 1. Install Ollama
+
+```bash
+# macOS
+brew install ollama
+
+# Or download from https://ollama.com
+```
+
+#### 2. Load Your Fine-Tuned Model
+
+```bash
+# Create a Modelfile pointing to your downloaded GGUF
+cat > ~/Modelfile << 'EOF'
+FROM /path/to/your/pentest-ai-gemma2-q4_k_m.gguf
+
+SYSTEM """You are PenTest AI Report Writer. You receive structured security scan findings and render them into professional, well-formatted Markdown security reports with proper severity ratings, CVSS scores, OWASP categories, and remediation code examples."""
+
+PARAMETER temperature 0.3
+PARAMETER num_ctx 8192
+PARAMETER num_predict 4096
+EOF
+
+ollama create pentest-ai -f ~/Modelfile
+```
+
+#### 3. Verify It Works
+
+```bash
+ollama run pentest-ai "Generate a one-line test response"
+# Should respond immediately
+```
+
+#### 4. Configure PenTest AI
+
+Add to your `.env` file:
+
+```bash
+# Local fine-tuned model (Ollama)
+LOCAL_MODEL_ENABLED=true
+LOCAL_MODEL_NAME=pentest-ai
+OLLAMA_BASE_URL=http://localhost:11434
+```
+
+#### 5. Run Ollama in the Background
+
+```bash
+# Start Ollama server (runs on port 11434)
+ollama serve &
+
+# Or set it to start automatically on macOS
+# It starts automatically after 'ollama create'
+```
+
+**Fallback Behavior**: If Ollama is not running or the model is not loaded, PenTest AI automatically falls back to Gemini for report generation. Scans will never fail due to the local model being unavailable.
+
+**To disable local model**: Set `LOCAL_MODEL_ENABLED=false` in your `.env` file to always use Gemini for reports (useful in CI/CD environments).
+
 ## 📊 Report Format
 
 All reports are generated as **professional markdown** with:
@@ -217,8 +279,11 @@ CVE data is prominently highlighted in reports with dedicated sections.
 |----------|-------------|---------|
 | `GEMINI_API_KEY` | Gemini API key (required) | - |
 | `GEMINI_MODEL` | Model to use | `gemini-2.0-flash-exp` |
+| `NVD_API_KEY` | NVD API key for CVE enrichment (optional) | - |
 | `AGENT_MAX_TOOLS` | Max tools per scan | `10` |
-| `AGENT_TIMEOUT` | Tool execution timeout (seconds) | `300` |
+| `LOCAL_MODEL_ENABLED` | Use local model for reports | `true` |
+| `LOCAL_MODEL_NAME` | Ollama model name | `pentest-ai` |
+| `OLLAMA_BASE_URL` | Ollama server URL | `http://localhost:11434` |
 
 ### AI Prompting
 
