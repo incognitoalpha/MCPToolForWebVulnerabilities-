@@ -25,16 +25,12 @@ async def test_vuln_lab_ui():
             # Check title
             title = await page.title()
             print(f"Page Title: {title}")
-            if "VulnLab" not in title:
-                print(f"FAILED: Expected 'VulnLab' in title, got '{title}'")
-                return False
-            
+            assert "VulnLab" in title, f"Expected 'VulnLab' in title, got '{title}'"
+
             # Check for Search Input (Reflected XSS target)
             print("Checking for Search Input...")
             search_input = page.locator('input[name="q"]')
-            if not await search_input.is_visible():
-                print("FAILED: Search input field not visible on home page")
-                return False
+            assert await search_input.is_visible(), "Search input field not visible on home page"
 
             # Login to see protected areas (like comments)
             print("Logging in...")
@@ -48,29 +44,22 @@ async def test_vuln_lab_ui():
             print("Checking for Ping Tool page...")
             await page.goto(f"{TARGET_URL}/tools/ping", wait_until="networkidle")
             ping_input = page.locator('input[name="host"]')
-            if not await ping_input.is_visible():
-                print("FAILED: Ping input field not visible on /tools/ping")
-                return False
-            
+            assert await ping_input.is_visible(), "Ping input field not visible on /tools/ping"
+
             # Check for Comments (XSS) on a post
             print("Checking for Comments section on post #1...")
             await page.goto(f"{TARGET_URL}/post/1", wait_until="networkidle")
-            comment_input = page.locator('textarea[name="content"]') 
-            if not await comment_input.is_visible():
-                print("FAILED: Comment textarea not visible on /post/1 even after login")
-                return False
-            
+            comment_input = page.locator('textarea[name="content"]')
+            assert await comment_input.is_visible(), "Comment textarea not visible on /post/1 even after login"
+
             # Check for Admin Dashboard (Broken Access Control)
             print("Checking for Admin Dashboard access...")
             await page.goto(f"{TARGET_URL}/admin", wait_until="networkidle")
             content = await page.content()
-            if "Admin Control Panel" not in content:
-                print("FAILED: 'Admin Control Panel' text not found on /admin page")
-                return False
-            
+            assert "Admin Control Panel" in content, "'Admin Control Panel' text not found on /admin page"
+
             print("✅ VulnLab UI verification successful.")
             await browser.close()
-            return True
             
         except Exception as e:
             print(f"❌ VulnLab UI verification encountered a fatal error:")
@@ -101,24 +90,19 @@ async def test_scanner_integration():
         # Verify SQLi was detected
         critical_count = findings_count.get('critical', 0)
         print(f"Critical findings found: {critical_count}")
-        
-        if critical_count == 0:
-            print("FAILED: No critical findings detected by the scanner.")
-            return False
-            
+
+        assert critical_count > 0, "No critical findings detected by the scanner"
+
         # Verify the report contains identified vulnerabilities
-        if report_path and Path(report_path).exists():
-            report_content = Path(report_path).read_text()
-            # FFUF correctly uncovers .env files with severity critical
-            if "env" not in report_content.lower() and "git" not in report_content.lower():
-                print("FAILED: No sensitive critical indicators found in the generated report.")
-                return False
-        else:
-            print(f"FAILED: Report file not found at {report_path}")
-            return False
+        assert report_path and Path(report_path).exists(), f"Report file not found at {report_path}"
+
+        report_content = Path(report_path).read_text()
+        # FFUF correctly uncovers .env files with severity critical
+        assert "env" in report_content.lower() or "git" in report_content.lower(), \
+            "No sensitive critical indicators found in the generated report"
         
         # Verify we are using professional tools (no fallbacks)
-        session_dir = Path(os.path.expanduser("~/.pentest-ai/sessions")) / session_id
+        session_dir = Path(os.path.expanduser("~/.pentest-mcp/sessions")) / session_id
         db_path = session_dir / "session.db"
         
         if db_path.exists():
@@ -128,16 +112,14 @@ async def test_scanner_integration():
             cursor.execute("SELECT tool, title, severity FROM findings WHERE severity = 'critical'")
             critical_findings = cursor.fetchall()
             conn.close()
-            
+
             print(f"Critical findings in DB: {critical_findings}")
-            if not any("SQL" in f[1] for f in critical_findings):
-                print("FAILED: SQL injection finding not found in database.")
-                return False
+            assert any("SQL" in f[1] for f in critical_findings), \
+                "SQL injection finding not found in database"
         else:
             print(f"WARNING: Session database not found at {db_path}")
-        
+
         print("✅ Scanner integration verification successful.")
-        return True
         
     except Exception as e:
         print(f"❌ Scanner integration encountered a fatal error:")
@@ -145,16 +127,30 @@ async def test_scanner_integration():
         return False
 
 async def main():
-    success_p1 = await test_vuln_lab_ui()
-    if not success_p1:
-        print("\n🚨 SYSTEM TEST FAILED IN PHASE 1! 🚨")
+    try:
+        await test_vuln_lab_ui()
+        print("\n✅ Phase 1 passed")
+    except AssertionError as e:
+        print(f"\n🚨 SYSTEM TEST FAILED IN PHASE 1! 🚨")
+        print(f"Error: {e}")
         exit(1)
-        
-    success_p2 = await test_scanner_integration()
-    if not success_p2:
-        print("\n🚨 SYSTEM TEST FAILED IN PHASE 2! 🚨")
+    except Exception as e:
+        print(f"\n🚨 SYSTEM TEST FAILED IN PHASE 1! 🚨")
+        traceback.print_exc()
         exit(1)
-        
+
+    try:
+        await test_scanner_integration()
+        print("\n✅ Phase 2 passed")
+    except AssertionError as e:
+        print(f"\n🚨 SYSTEM TEST FAILED IN PHASE 2! 🚨")
+        print(f"Error: {e}")
+        exit(1)
+    except Exception as e:
+        print(f"\n🚨 SYSTEM TEST FAILED IN PHASE 2! 🚨")
+        traceback.print_exc()
+        exit(1)
+
     print("\n✨ ALL TESTS PASSED SUCCESSFULLY! ✨")
 
 if __name__ == "__main__":

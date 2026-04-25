@@ -169,68 +169,6 @@ brew install nmap sqlmap ffuf nuclei nikto gobuster testssl
 apt-get install nmap sqlmap nikto
 ```
 
-### Local Model Setup (Optional - Enhanced Report Quality)
-
-PenTest AI v3.0 uses a dual-LLM architecture: Gemini handles tool orchestration and analysis, while a fine-tuned local model generates consistently formatted reports. This improves report quality and reduces API costs.
-
-#### 1. Install Ollama
-
-```bash
-# macOS
-brew install ollama
-
-# Or download from https://ollama.com
-```
-
-#### 2. Load Your Fine-Tuned Model
-
-```bash
-# Create a Modelfile pointing to your downloaded GGUF
-cat > ~/Modelfile << 'EOF'
-FROM /path/to/your/pentest-ai-gemma2-q4_k_m.gguf
-
-SYSTEM """You are PenTest AI Report Writer. You receive structured security scan findings and render them into professional, well-formatted Markdown security reports with proper severity ratings, CVSS scores, OWASP categories, and remediation code examples."""
-
-PARAMETER temperature 0.3
-PARAMETER num_ctx 8192
-PARAMETER num_predict 4096
-EOF
-
-ollama create pentest-ai -f ~/Modelfile
-```
-
-#### 3. Verify It Works
-
-```bash
-ollama run pentest-ai "Generate a one-line test response"
-# Should respond immediately
-```
-
-#### 4. Configure PenTest AI
-
-Add to your `.env` file:
-
-```bash
-# Local fine-tuned model (Ollama)
-LOCAL_MODEL_ENABLED=true
-LOCAL_MODEL_NAME=pentest-ai
-OLLAMA_BASE_URL=http://localhost:11434
-```
-
-#### 5. Run Ollama in the Background
-
-```bash
-# Start Ollama server (runs on port 11434)
-ollama serve &
-
-# Or set it to start automatically on macOS
-# It starts automatically after 'ollama create'
-```
-
-**Fallback Behavior**: If Ollama is not running or the model is not loaded, PenTest AI automatically falls back to Gemini for report generation. Scans will never fail due to the local model being unavailable.
-
-**To disable local model**: Set `LOCAL_MODEL_ENABLED=false` in your `.env` file to always use Gemini for reports (useful in CI/CD environments).
-
 ## 📊 Report Format
 
 All reports are generated as **professional markdown** with:
@@ -279,10 +217,10 @@ CVE data is prominently highlighted in reports with dedicated sections.
 |----------|-------------|---------|
 | `GEMINI_API_KEY` | Gemini API key (required) | - |
 | `GEMINI_MODEL` | Model to use | `gemini-2.0-flash-exp` |
-| `NVD_API_KEY` | NVD API key for CVE enrichment (optional) | - |
 | `AGENT_MAX_TOOLS` | Max tools per scan | `10` |
-| `LOCAL_MODEL_ENABLED` | Use local model for reports | `true` |
-| `LOCAL_MODEL_NAME` | Ollama model name | `pentest-ai` |
+| `AGENT_TIMEOUT` | Tool execution timeout (seconds) | `300` |
+| `LOCAL_MODEL_ENABLED` | Enable local model for reports | `false` |
+| `LOCAL_MODEL_NAME` | Local model name | `pentest-ai-1.5b` |
 | `OLLAMA_BASE_URL` | Ollama server URL | `http://localhost:11434` |
 
 ### AI Prompting
@@ -296,6 +234,56 @@ The tool uses **enhanced Gemini prompts** designed for professional penetration 
 - Prioritized remediation with effort estimates
 - Temperature 0.2 for consistency
 - 16K token output for comprehensive reports
+
+### Fine-Tuned Local Model
+
+PenTest MCP includes a **custom fine-tuned Qwen2 1.5B model** (`qwen2-1.5b-instruct.Q4_K_M.gguf`) specifically trained for security report generation. This model can be used as an alternative to Gemini for generating professional penetration testing reports.
+
+**Model Capabilities:**
+- Trained on security assessment reports and OWASP documentation
+- Generates executive summaries with business impact analysis
+- Produces CVSS scoring and risk assessments
+- Creates remediation roadmaps with effort estimates
+- Optimized for markdown report formatting
+
+**Using the Local Model:**
+
+1. **Install Ollama** ([ollama.ai](https://ollama.ai))
+   ```bash
+   # macOS/Linux
+   curl -fsSL https://ollama.ai/install.sh | sh
+   ```
+
+2. **Create Modelfile** for the fine-tuned model:
+   ```bash
+   cat > Modelfile <<EOF
+   FROM ./qwen2-1.5b-instruct.Q4_K_M.gguf
+   PARAMETER temperature 0.2
+   PARAMETER top_p 0.9
+   SYSTEM "You are a senior penetration testing consultant with 15+ years of experience writing professional security assessment reports."
+   EOF
+   ```
+
+3. **Load the model** into Ollama:
+   ```bash
+   ollama create pentest-ai-1.5b -f Modelfile
+   ```
+
+4. **Enable in configuration** (`.env`):
+   ```bash
+   LOCAL_MODEL_ENABLED=true
+   LOCAL_MODEL_NAME=pentest-ai-1.5b
+   OLLAMA_BASE_URL=http://localhost:11434
+   ```
+
+**Benefits:**
+- **Privacy**: All report generation happens locally, no data sent to external APIs
+- **Cost**: No API costs after initial setup
+- **Speed**: Fast inference on modern hardware
+- **Offline**: Works without internet connection
+
+**Training Details:**
+The model was fine-tuned using the training notebook `FineTuning.ipynb` (included in repository) on a curated dataset of professional security reports, CVE analyses, and OWASP guidelines.
 
 ## 🔒 Security Notice
 
