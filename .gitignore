@@ -75,6 +75,16 @@ skills-lock.json
 tmp/
 wordlists/common.txt
 
+# Model files - Too large for git
+*.gguf
+*.bin
+*.safetensors
+models/
+
+# Test results
+*TEST_RESULTS*.md
+test_results/
+
 # Sensitive files - NEVER commit
 *.key
 *.pem

@@ -2,7 +2,7 @@
 
 **AI-Powered Penetration Testing with Natural Language**
 
-A standalone CLI tool that integrates 43+ security tools with Gemini AI analysis. Ask security questions in plain English and get professional markdown reports with CVE enrichment.
+Standalone CLI tool integrating 43+ security tools with dual LLM architecture. Ask security questions in plain English, get professional markdown reports with CVE enrichment.
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![Gemini 2.0](https://img.shields.io/badge/LLM-Gemini%202.0%20Flash-orange?logo=google)](https://ai.google.dev/)
@@ -28,6 +28,7 @@ pentest ask --query "scan for XSS and SQL injection" --target http://localhost:3
 
 ## ✨ Key Features
 
+- **Dual LLM Architecture** - Gemini API (cloud) + fine-tuned Qwen 1.5B (local)
 - **Natural Language Interface** - Ask security questions in plain English
 - **43+ Security Tools** - nmap, sqlmap, nuclei, ffuf, nikto, testssl, and more
 - **CVE Enrichment** - Automatic CVE lookup with CVSS scores and patch information
@@ -36,39 +37,88 @@ pentest ask --query "scan for XSS and SQL injection" --target http://localhost:3
 - **Session Management** - Track and resume security assessments
 - **OWASP Top 10 Coverage** - Systematic scanning mapped to OWASP 2021
 
-## 📋 Architecture
+## 🧠 Dual LLM Architecture
+
+PenTest MCP supports two LLM backends for report generation:
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  $ pentest ask --query "scan for SQLi" \           │
-│    --target http://localhost:3001 --consent        │
-└──────────────┬──────────────────────────────────────┘
-               │
-               ▼
-┌─────────────────────────────────────────────────────┐
-│         GEMINI-POWERED AGENT                        │
-│                                                     │
-│  1. PLAN    → AI selects tools from query          │
-│  2. EXECUTE → Runs tools, collects findings        │
-│  3. ENRICH  → CVE data from NVD API                │
-│  4. REPORT  → AI generates professional markdown   │
-│                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐         │
-│  │  nmap    │  │ sqlmap   │  │  ffuf    │         │
-│  │  nuclei  │  │ dalfox   │  │  nikto   │         │
-│  │  sslyze  │  │ testssl  │  │  ...43+  │         │
-│  └──────────┘  └──────────┘  └──────────┘         │
-│                      │                              │
-│                      ▼                              │
-│         ┌────────────────────────┐                 │
-│         │   GEMINI 2.0 FLASH     │                 │
-│         │  Senior Consultant AI  │                 │
-│         │  CVE Analysis          │                 │
-│         │  CVSS Scoring          │                 │
-│         │  Executive Reports     │                 │
-│         └────────────────────────┘                 │
-└─────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    PENTEST MCP AGENT                        │
+│                                                             │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │  TOOL ORCHESTRATION                                  │  │
+│  │  nmap · sqlmap · nuclei · ffuf · nikto · testssl    │  │
+│  │  43+ security tools                                  │  │
+│  └────────────────────┬─────────────────────────────────┘  │
+│                       │                                     │
+│                       ▼                                     │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │  CVE ENRICHMENT ENGINE                               │  │
+│  │  NVD API · CVSS Scoring · Patch Information          │  │
+│  └────────────────────┬─────────────────────────────────┘  │
+│                       │                                     │
+│                       ▼                                     │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │           DUAL LLM REPORT GENERATOR                  │  │
+│  │                                                       │  │
+│  │  ┌─────────────────────┐   ┌──────────────────────┐ │  │
+│  │  │  GEMINI 2.0 FLASH   │   │  QWEN 1.5B (LOCAL)   │ │  │
+│  │  │  ✓ Cloud-based      │   │  • Fine-tuned model  │ │  │
+│  │  │  ✓ Default/Active   │   │  • Privacy-focused   │ │  │
+│  │  │  ✓ Best quality     │   │  • Offline capable   │ │  │
+│  │  │  • Requires API key │   │  • Toggle via .env   │ │  │
+│  │  └─────────────────────┘   └──────────────────────┘ │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                       │                                     │
+│                       ▼                                     │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │  PROFESSIONAL MARKDOWN REPORT                        │  │
+│  │  Executive Summary · CVE Analysis · Remediation      │  │
+│  └──────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
 ```
+
+### Default: Gemini 2.0 Flash (Recommended)
+
+Cloud-based LLM providing highest quality reports. Active by default.
+
+**Pros:**
+- Superior report quality and analysis depth
+- No local setup required
+- Always up-to-date model
+- Fast inference
+
+**Cons:**
+- Requires API key and internet connection
+- Data sent to Google servers
+
+### Alternative: Fine-Tuned Qwen 1.5B (Local)
+
+Custom-trained model for security report generation. Trained using `FineTuning.ipynb` on professional pentest reports and OWASP documentation.
+
+**Pros:**
+- Complete privacy - all processing local
+- No API costs
+- Offline capable
+- Fast on modern hardware
+
+**Cons:**
+- Requires Ollama installation
+- Lower quality than Gemini
+- Needs model setup
+
+**To enable local model:**
+
+1. Install Ollama: `curl -fsSL https://ollama.ai/install.sh | sh`
+2. Set in `.env`:
+   ```bash
+   LOCAL_MODEL_ENABLED=true
+   LOCAL_MODEL_NAME=pentest-ai-1.5b
+   ```
+3. Load model (if you have the .gguf file):
+   ```bash
+   ollama create pentest-ai-1.5b -f Modelfile
+   ```
 
 ## 📖 Commands
 
@@ -155,6 +205,11 @@ GEMINI_API_KEY=your_api_key_here
 
 # Optional: Model selection (default: gemini-2.0-flash-exp)
 GEMINI_MODEL=gemini-2.0-flash-exp
+
+# Optional: Enable local model (default: false)
+LOCAL_MODEL_ENABLED=false
+LOCAL_MODEL_NAME=pentest-ai-1.5b
+OLLAMA_BASE_URL=http://localhost:11434
 ```
 
 ### Install Security Tools (Optional)
@@ -225,7 +280,7 @@ CVE data is prominently highlighted in reports with dedicated sections.
 
 ### AI Prompting
 
-The tool uses **enhanced Gemini prompts** designed for professional penetration testing:
+The tool uses **enhanced prompts** designed for professional penetration testing:
 
 - Senior consultant persona with 15+ years experience
 - Detailed report structure requirements
@@ -234,56 +289,6 @@ The tool uses **enhanced Gemini prompts** designed for professional penetration 
 - Prioritized remediation with effort estimates
 - Temperature 0.2 for consistency
 - 16K token output for comprehensive reports
-
-### Fine-Tuned Local Model
-
-PenTest MCP includes a **custom fine-tuned Qwen2 1.5B model** (`qwen2-1.5b-instruct.Q4_K_M.gguf`) specifically trained for security report generation. This model can be used as an alternative to Gemini for generating professional penetration testing reports.
-
-**Model Capabilities:**
-- Trained on security assessment reports and OWASP documentation
-- Generates executive summaries with business impact analysis
-- Produces CVSS scoring and risk assessments
-- Creates remediation roadmaps with effort estimates
-- Optimized for markdown report formatting
-
-**Using the Local Model:**
-
-1. **Install Ollama** ([ollama.ai](https://ollama.ai))
-   ```bash
-   # macOS/Linux
-   curl -fsSL https://ollama.ai/install.sh | sh
-   ```
-
-2. **Create Modelfile** for the fine-tuned model:
-   ```bash
-   cat > Modelfile <<EOF
-   FROM ./qwen2-1.5b-instruct.Q4_K_M.gguf
-   PARAMETER temperature 0.2
-   PARAMETER top_p 0.9
-   SYSTEM "You are a senior penetration testing consultant with 15+ years of experience writing professional security assessment reports."
-   EOF
-   ```
-
-3. **Load the model** into Ollama:
-   ```bash
-   ollama create pentest-ai-1.5b -f Modelfile
-   ```
-
-4. **Enable in configuration** (`.env`):
-   ```bash
-   LOCAL_MODEL_ENABLED=true
-   LOCAL_MODEL_NAME=pentest-ai-1.5b
-   OLLAMA_BASE_URL=http://localhost:11434
-   ```
-
-**Benefits:**
-- **Privacy**: All report generation happens locally, no data sent to external APIs
-- **Cost**: No API costs after initial setup
-- **Speed**: Fast inference on modern hardware
-- **Offline**: Works without internet connection
-
-**Training Details:**
-The model was fine-tuned using the training notebook `FineTuning.ipynb` (included in repository) on a curated dataset of professional security reports, CVE analyses, and OWASP guidelines.
 
 ## 🔒 Security Notice
 
@@ -304,12 +309,14 @@ pentest-mcp/
 │   ├── scan_modes.py          # Preset scan modes
 │   ├── session.py             # Session management
 │   ├── enrichment.py          # CVE enrichment
-│   ├── llm_providers.py       # Gemini integration
+│   ├── llm_providers.py       # Gemini + Ollama integration
+│   ├── report_engine.py       # Report generation
 │   ├── tools/
 │   │   ├── professional.py    # External tool wrappers
 │   │   ├── tool_registry.py   # Tool execution
 │   │   └── analysis.py        # AI analysis tools
 │   └── models.py              # Data models
+├── FineTuning.ipynb           # Model training notebook
 ├── reports/                   # Generated reports (gitignored)
 ├── .agents/                   # Agent skills (gitignored)
 ├── COMMAND_REFERENCE.md       # Complete command guide
@@ -323,6 +330,12 @@ pentest-mcp/
 - Verify API key: `echo $GEMINI_API_KEY`
 - Check rate limits at [Google AI Studio](https://aistudio.google.com)
 - Tool continues scanning even if Gemini fails
+
+### Local Model Issues
+
+- Ensure Ollama is running: `ollama list`
+- Verify model loaded: `ollama list | grep pentest-ai`
+- Check logs: `~/.pentest-mcp/sessions/<session_id>/session.log`
 
 ### Tools Not Detected
 
