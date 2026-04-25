@@ -1,7 +1,7 @@
 [project]
-name = "pentest-ai"
+name = "pentest-mcp"
 version = "3.0.0"
-description = "AI-powered penetration testing CLI with natural language interface"
+description = "MCP server exposing 25+ security tools to Claude Desktop for AI-powered penetration testing"
 readme = "README.md"
 authors = [
     { name = "Mohit Sahoo" },
@@ -16,7 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
-keywords = ["security", "penetration-testing", "cli", "ai", "owasp", "vulnerability-scanner"]
+keywords = ["security", "penetration-testing", "mcp", "ai", "owasp", "vulnerability-scanner", "claude"]
 requires-python = ">=3.11"
 dependencies = [
     "typer>=0.12.0",
@@ -32,6 +32,7 @@ dependencies = [
     "pyyaml>=6.0.0",
     "rich>=13.0.0",
     "playwright>=1.58.0",
+    "mcp>=1.0.0",
 ]
 
 [project.optional-dependencies]
@@ -42,8 +43,7 @@ dev = [
 ]
 
 [project.scripts]
-pentest = "pentest_mcp.cli:app"
-pentest-ai = "pentest_mcp.cli:app"
+pentest-mcp-server = "pentest_mcp.mcp_server:run"
 
 [project.urls]
 Homepage = "https://github.com/MohitSahoo/MCPToolForWebVulnerabilities-"

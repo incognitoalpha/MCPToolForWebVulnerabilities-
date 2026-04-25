@@ -1,11 +1,11 @@
 # 🛡️ PenTest MCP
 
-**AI-Powered Penetration Testing with Natural Language**
+**AI-Powered Security Scanning via Model Context Protocol**
 
-Standalone CLI tool integrating 43+ security tools with dual LLM architecture. Ask security questions in plain English, get professional markdown reports with CVE enrichment.
+MCP server exposing 25+ security tools to Claude Desktop. Claude orchestrates penetration testing through natural language - no CLI needed.
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue?logo=python&logoColor=white)](https://www.python.org/)
-[![Gemini 2.0](https://img.shields.io/badge/LLM-Gemini%202.0%20Flash-orange?logo=google)](https://ai.google.dev/)
+[![MCP](https://img.shields.io/badge/MCP-1.0+-purple)](https://modelcontextprotocol.io/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
 ---
@@ -16,69 +16,64 @@ Standalone CLI tool integrating 43+ security tools with dual LLM architecture. A
 # Install dependencies
 pip install -e .
 
-# Configure API key
-export GEMINI_API_KEY="your_key_here"
+# Add to Claude Desktop config (see CLAUDE_DESKTOP_CONFIG.md)
+# Then restart Claude Desktop
 
-# Run a quick scan
-pentest run --target http://localhost:3001 --mode quick --consent
-
-# Or use natural language
-pentest ask --query "scan for XSS and SQL injection" --target http://localhost:3001 --consent
+# Example prompts in Claude Desktop:
+# "Initialize a security assessment for http://localhost:3001"
+# "Run a quick scan on http://localhost:3001 with consent"
+# "Check if the site has a WAF"
+# "Scan for XSS vulnerabilities"
+# "Generate the final security report"
 ```
 
 ## ✨ Key Features
 
-- **Dual LLM Architecture** - Gemini API (cloud) + fine-tuned Qwen 1.5B (local)
-- **Natural Language Interface** - Ask security questions in plain English
-- **43+ Security Tools** - nmap, sqlmap, nuclei, ffuf, nikto, testssl, and more
-- **CVE Enrichment** - Automatic CVE lookup with CVSS scores and patch information
-- **AI-Powered Reports** - Senior consultant-level markdown reports with executive summaries
-- **3 Scan Modes** - Quick (5-10 min), Medium (15-30 min), Extensive (45+ min)
-- **Session Management** - Track and resume security assessments
-- **OWASP Top 10 Coverage** - Systematic scanning mapped to OWASP 2021
+- **Claude Desktop Integration** - Claude orchestrates security tools via MCP protocol
+- **30 Security Tools** - nmap, sqlmap, nuclei, ffuf, nikto, testssl, and more
+- **Natural Language** - Ask security questions, Claude picks the right tools
+- **3 Preset Scan Modes** - Quick (5-10 min), Medium (15-30 min), Extensive (45+ min)
+- **CVE Enrichment** - Automatic CVE lookup with CVSS scores
+- **AI-Generated Reports** - Professional markdown reports with remediation guidance
+- **Session Management** - Track findings across multiple tool executions
+- **Real-Time Results** - See tool output as scans progress
 
-## 🧠 Dual LLM Architecture
-
-PenTest MCP supports two LLM backends for report generation:
+## 🏗️ Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    PENTEST MCP AGENT                        │
+│                   CLAUDE DESKTOP                            │
+│                   (MCP Client)                              │
 │                                                             │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  TOOL ORCHESTRATION                                  │  │
-│  │  nmap · sqlmap · nuclei · ffuf · nikto · testssl    │  │
-│  │  43+ security tools                                  │  │
-│  └────────────────────┬─────────────────────────────────┘  │
-│                       │                                     │
-│                       ▼                                     │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  CVE ENRICHMENT ENGINE                               │  │
-│  │  NVD API · CVSS Scoring · Patch Information          │  │
-│  └────────────────────┬─────────────────────────────────┘  │
-│                       │                                     │
-│                       ▼                                     │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │           DUAL LLM REPORT GENERATOR                  │  │
-│  │                                                       │  │
-│  │  ┌─────────────────────┐   ┌──────────────────────┐ │  │
-│  │  │  GEMINI 2.0 FLASH   │   │  QWEN 1.5B (LOCAL)   │ │  │
-│  │  │  ✓ Cloud-based      │   │  • Fine-tuned model  │ │  │
-│  │  │  ✓ Default/Active   │   │  • Privacy-focused   │ │  │
-│  │  │  ✓ Best quality     │   │  • Offline capable   │ │  │
-│  │  │  • Requires API key │   │  • Toggle via .env   │ │  │
-│  │  └─────────────────────┘   └──────────────────────┘ │  │
-│  └──────────────────────────────────────────────────────┘  │
-│                       │                                     │
-│                       ▼                                     │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │  PROFESSIONAL MARKDOWN REPORT                        │  │
-│  │  Executive Summary · CVE Analysis · Remediation      │  │
-│  └──────────────────────────────────────────────────────┘  │
+│  User: "Scan http://localhost:3001 for XSS"                │
+│  Claude: Calls nuclei, dalfox, nikto tools                 │
+└────────────────────┬────────────────────────────────────────┘
+                     │ MCP Protocol (stdio)
+                     │ JSON-RPC tool calls
+                     ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   MCP SERVER                                │
+│                   (pentest_mcp/mcp_server.py)               │
+│                                                             │
+│  Tool Registry:                                             │
+│  • 25 individual tools (nmap, sqlmap, nuclei, etc.)        │
+│  • 3 preset modes (quick_scan, medium_scan, extensive)     │
+│  • 2 session tools (init_session, get_report)              │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────────┐
+│              EXISTING TOOL LAYER (unchanged)                │
+│                                                             │
+│  tools/professional.py  - 25 tool wrappers                 │
+│  scan_modes.py          - preset scan logic                │
+│  enrichment.py          - CVE lookup                       │
+│  report_engine.py       - markdown generation              │
+│  session.py             - session management               │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Default: Gemini 2.0 Flash (Recommended)
+### Report Generation: Gemini
 
 Cloud-based LLM providing highest quality reports. Active by default.
 
@@ -92,33 +87,7 @@ Cloud-based LLM providing highest quality reports. Active by default.
 - Requires API key and internet connection
 - Data sent to Google servers
 
-### Alternative: Fine-Tuned Qwen 1.5B (Local)
-
-Custom-trained model for security report generation. Trained using `FineTuning.ipynb` on professional pentest reports and OWASP documentation.
-
-**Pros:**
-- Complete privacy - all processing local
-- No API costs
-- Offline capable
-- Fast on modern hardware
-
-**Cons:**
-- Requires Ollama installation
-- Lower quality than Gemini
-- Needs model setup
-
-**To enable local model:**
-
-1. Install Ollama: `curl -fsSL https://ollama.ai/install.sh | sh`
-2. Set in `.env`:
-   ```bash
-   LOCAL_MODEL_ENABLED=true
-   LOCAL_MODEL_NAME=pentest-ai-1.5b
-   ```
-3. Load model (if you have the .gguf file):
-   ```bash
-   ollama create pentest-ai-1.5b -f Modelfile
-   ```
+Report generation uses Gemini exclusively. `FineTuning.ipynb` remains as a historical training artifact, but it is not part of the active report-generation architecture.
 
 ## 📖 Commands
 
@@ -206,10 +175,6 @@ GEMINI_API_KEY=your_api_key_here
 # Optional: Model selection (default: gemini-2.0-flash-exp)
 GEMINI_MODEL=gemini-2.0-flash-exp
 
-# Optional: Enable local model (default: false)
-LOCAL_MODEL_ENABLED=false
-LOCAL_MODEL_NAME=pentest-ai-1.5b
-OLLAMA_BASE_URL=http://localhost:11434
 ```
 
 ### Install Security Tools (Optional)
@@ -274,9 +239,6 @@ CVE data is prominently highlighted in reports with dedicated sections.
 | `GEMINI_MODEL` | Model to use | `gemini-2.0-flash-exp` |
 | `AGENT_MAX_TOOLS` | Max tools per scan | `10` |
 | `AGENT_TIMEOUT` | Tool execution timeout (seconds) | `300` |
-| `LOCAL_MODEL_ENABLED` | Enable local model for reports | `false` |
-| `LOCAL_MODEL_NAME` | Local model name | `pentest-ai-1.5b` |
-| `OLLAMA_BASE_URL` | Ollama server URL | `http://localhost:11434` |
 
 ### AI Prompting
 
@@ -309,7 +271,7 @@ pentest-mcp/
 │   ├── scan_modes.py          # Preset scan modes
 │   ├── session.py             # Session management
 │   ├── enrichment.py          # CVE enrichment
-│   ├── llm_providers.py       # Gemini + Ollama integration
+│   ├── llm_providers.py       # Gemini integration
 │   ├── report_engine.py       # Report generation
 │   ├── tools/
 │   │   ├── professional.py    # External tool wrappers
@@ -331,10 +293,10 @@ pentest-mcp/
 - Check rate limits at [Google AI Studio](https://aistudio.google.com)
 - Tool continues scanning even if Gemini fails
 
-### Local Model Issues
+### Report Generation Issues
 
-- Ensure Ollama is running: `ollama list`
-- Verify model loaded: `ollama list | grep pentest-ai`
+- Verify API key: `echo $GEMINI_API_KEY`
+- Check rate limits at [Google AI Studio](https://aistudio.google.com)
 - Check logs: `~/.pentest-mcp/sessions/<session_id>/session.log`
 
 ### Tools Not Detected
