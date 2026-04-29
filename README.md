@@ -42,7 +42,43 @@ PenTest MCP is a specialized MCP server that exposes 25+ professional security t
 
 ---
 
-## ✨ Key Features
+## 🏗️ Architecture
+
+```mermaid
+graph TD
+    User([User / Claude Desktop]) <-->|MCP Protocol| Server[MCP Server]
+    
+    subgraph Server [PenTest MCP Server]
+        direction TB
+        Registry[Tool Registry]
+        ServerLogic[MCP Handlers]
+        
+        subgraph Logic [Logic Layer]
+            direction LR
+            ScanModes[Scan Modes]
+            Sessions[Session Manager]
+            Reports[Report Engine]
+        end
+        
+        subgraph Wrappers [Tool Wrappers]
+            direction LR
+            ProfTools[Professional Wrappers]
+            Fallbacks[Python Fallbacks]
+        end
+    end
+    
+    Logic <--> Registry
+    Registry <--> Wrappers
+    
+    ProfTools -->|Subprocess| ExtTools[External Tools: Nmap, Nuclei, Sqlmap, etc.]
+    Reports <-->|API| Gemini[Gemini AI Engine]
+    
+    Sessions -->|Storage| SQLite[(SQLite DB)]
+    Reports -->|Output| MD[Markdown Reports]
+```
+
+---
+
 
 - **Claude Desktop Integration** - Full orchestration via the Model Context Protocol.
 - **25+ Security Tools** - Including `nmap`, `sqlmap`, `nuclei`, `ffuf`, `nikto`, `testssl`, and more.
