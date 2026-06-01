@@ -90,19 +90,6 @@ Claude will:
 3. Professional report generation
 4. Natural language → security tools translation
 
-## Testing Without Claude Desktop
-
-Use MCP Inspector:
-
-```bash
-npx @modelcontextprotocol/inspector python3 -m pentest_mcp.mcp_server
-```
-
-This opens a web UI at http://localhost:5173 where you can:
-- Browse available tools
-- Test tool calls with JSON payloads
-- See responses in real-time
-
 ### Example Test Calls
 
 **Initialize Session:**

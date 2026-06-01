@@ -1,61 +1,249 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Network Tools - VulnLab</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔓 Network Diagnostic | VulnLab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background: #1a1a2e; color: #eee; }
-    .nav { background: #16213e; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-    .nav a { color: #e94560; text-decoration: none; margin-left: 20px; }
-    .nav .brand { font-size: 1.5em; font-weight: bold; color: #e94560; }
-    .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
-    .card { background: #16213e; border-radius: 8px; padding: 30px; border-top: 4px solid #e94560; }
-    .card h1 { margin-bottom: 20px; color: #e94560; }
-    .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-    input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #333; background: #0f3460; color: #eee; font-size: 1em; }
-    button { padding: 12px 24px; background: #e94560; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-    .output-box { background: #000; color: #00ff00; padding: 20px; border-radius: 6px; margin-top: 20px; font-family: 'Courier New', Courier, monospace; white-space: pre-wrap; word-break: break-all; min-height: 100px; border: 1px solid #333; }
-    .warning-banner { background: #e94560; color: #fff; text-align: center; padding: 8px; font-size: 0.85em; }
+    :root {
+      --bg-dark: #0a0b10;
+      --panel-dark: #12131c;
+      --accent-neon: #00f0ff;
+      --accent-pink: #ff007f;
+      --text-main: #e2e8f0;
+      --text-muted: #64748b;
+      --border-color: #27273a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border-color);
+      background-color: rgba(18, 19, 28, 0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--accent-neon);
+      text-decoration: none;
+    }
+
+    .brand span {
+      color: var(--accent-pink);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent-neon);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .ping-card {
+      background: var(--panel-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ping-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-neon), var(--accent-pink));
+    }
+
+    .ping-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--accent-neon);
+      margin-bottom: 20px;
+    }
+
+    .ping-description {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .cyber-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.3s ease;
+      font-family: monospace;
+    }
+
+    .cyber-input:focus {
+      border-color: var(--accent-neon);
+    }
+
+    .cyber-button {
+      background: var(--accent-neon);
+      color: var(--bg-dark);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .cyber-button:hover {
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+    }
+
+    .terminal-output {
+      margin-top: 30px;
+      background: #020205;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      font-family: 'Courier New', Courier, monospace;
+      color: #39ff14;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+      min-height: 150px;
+      box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.1);
+    }
+
+    .terminal-header {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .tip-box {
+      margin-top: 35px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 20px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .tip-box code {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
   </style>
 </head>
 <body>
-  <div class="warning-banner">⚠️ DELIBERATELY VULNERABLE - FOR TESTING ONLY ⚠️</div>
-  <nav class="nav">
-    <span class="brand">🔓 VulnLab</span>
-    <div>
-      <a href="/">Home</a>
-      <a href="/search?q=">Search</a>
-      <a href="/tools/ping">Ping Tool</a>
-      <a href="/admin">Admin</a>
-      <% if (user) { %>
-        <a href="/profile/<%= user.id %>">Profile</a>
-        <a href="/logout">Logout (<%= user.username %>)</a>
-      <% } else { %>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-      <% } %>
+  <header>
+    <div class="header-container">
+      <a href="/" class="brand">🔓 VULN<span>LAB</span></a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/search?q=">Search</a>
+        <a href="/tools/ping">Ping System</a>
+        <a href="/admin">Admin Control</a>
+      </nav>
     </div>
-  </nav>
+  </header>
+
   <div class="container">
-    <div class="card">
-      <h1>🌐 Network Diagnostics: Ping</h1>
-      <p style="margin-bottom: 20px; color: #888;">Test connectivity to a remote host. Enter an IP address or hostname.</p>
-      
-      <form action="/tools/ping" method="POST">
-        <div class="input-group">
-          <input type="text" name="host" placeholder="e.g., 8.8.8.8" value="<%= host %>" required>
-          <button type="submit">Run Ping</button>
+    <div class="ping-card">
+      <h1 class="ping-title">ICMP Echo Request Tool</h1>
+      <p class="ping-description">
+        Utilize this diagnostic utility to trace system network interfaces. It runs a direct server-side subprocess check.
+      </p>
+
+      <form method="POST" action="/tools/ping">
+        <div class="form-group">
+          <label class="form-label">Diagnostic Host Address</label>
+          <input type="text" name="host" class="cyber-input" placeholder="e.g., 127.0.0.1" required>
         </div>
+        <button type="submit" class="cyber-button">Trigger Probe</button>
       </form>
-      
-      <% if (output) { %>
-        <div class="output-box"><%= output %></div>
+
+      <% if (output || error) { %>
+        <div class="terminal-header">📟 Diagnostic Trace Console</div>
+        <div class="terminal-output"><%= output || error %></div>
       <% } %>
-      
-      <div style="margin-top: 30px; font-size: 0.9em; color: #888; border-top: 1px solid #333; padding-top: 20px;">
-        <p><b>Usage Instructions:</b></p>
-        <p style="margin-top: 5px;">This tool runs the standard <code>ping -c 3 [host]</code> command and displays the output.</p>
-        <p style="margin-top: 5px; color: #e94560;">💡 <b>Hint:</b> Try adding a semicolon and another command, like <code>8.8.8.8; ls -la</code>. (Command Injection)</p>
+
+      <div class="tip-box">
+        <strong>💡 Command Injection Exploit Sandbox:</strong> Subprocess parameters are executed directly in the shell using dynamic string construction. Bypass security checks by separating operations (e.g., <code>127.0.0.1; whoami</code> or <code>127.0.0.1 && cat /etc/passwd</code>).
       </div>
     </div>
   </div>

@@ -64,18 +64,18 @@ async def test_vuln_lab_ui():
         except Exception as e:
             print(f"❌ VulnLab UI verification encountered a fatal error:")
             traceback.print_exc()
-            return False
+            raise e
 
 async def test_scanner_integration():
     """Phase 2: Verify Scanner integration and SQLi detection."""
-    print("\n--- Phase 2: Verifying Scanner Integration (Medium Mode) ---")
+    print("\n--- Phase 2: Verifying Scanner Integration (Extensive Mode) ---")
     
-    # Run a Medium scan
-    print("Starting Medium Scan (this may take 1-2 minutes)...")
+    # Run an Extensive scan
+    print("Starting Extensive Scan (this may take a few minutes)...")
     try:
         result = await run_scan_mode(
             target=TARGET_URL,
-            mode="medium",
+            mode="extensive",
             consent=True
         )
         
@@ -124,7 +124,7 @@ async def test_scanner_integration():
     except Exception as e:
         print(f"❌ Scanner integration encountered a fatal error:")
         traceback.print_exc()
-        return False
+        raise e
 
 async def main():
     try:

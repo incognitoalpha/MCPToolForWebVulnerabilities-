@@ -1,0 +1,6 @@
+# Allowed targets for PenTest AI scans (one host/CIDR per line)
+localhost
+127.0.0.1
+::1
+# My Vercel portfolio (authorized for self-pentest)
+mohit-kumar-sahoo-portfolio.vercel.app

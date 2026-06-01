@@ -76,12 +76,6 @@ After adding the configuration:
 - `jwt_tool` - JWT testing
 - `graphql_cop` - GraphQL scanner
 
-## Testing Without Claude Desktop
+## Notes
 
-Use MCP Inspector:
-
-```bash
-npx @modelcontextprotocol/inspector python3 -m pentest_mcp.mcp_server
-```
-
-This opens a web UI to test tool calls directly.
+Claude Desktop is the supported interface for this project. If you need to verify the server outside Claude, use the MCP Inspector locally, but there is no separate browser app to run.

@@ -1,0 +1,417 @@
+{
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "ping",
+      "description": "Health check for the PenTest MCP server",
+      "input_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "init_session",
+      "description": "Initialize new security assessment session",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "target": {"type": "string", "description": "Target URL or domain"}
+        },
+        "required": ["target"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "get_report",
+      "description": "Generate final security assessment report",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "session_id": {"type": "string", "description": "Session identifier"}
+        },
+        "required": ["session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "environment_check",
+      "description": "Inspect installed tools, missing dependencies, and assessment readiness",
+      "input_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "quick_scan",
+      "description": "Fast triage scan (10-15 min): WAF detection, subdomain enum, top-port scan, header analysis, TLS audit, tech fingerprinting, sensitive file discovery, SSRF probe, CSRF check",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "target": {"type": "string", "description": "Target URL"},
+          "consent": {"type": "boolean", "description": "Explicit consent for active scanning"}
+        },
+        "required": ["target", "consent"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "extensive_scan",
+      "description": "Comprehensive scan (20-45 min): WAF detection, full recon, top-1000 port scan, tech fingerprinting, TLS audit, directory discovery, XSS, SQLi, CSRF, sensitive file discovery",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "target": {"type": "string", "description": "Target URL"},
+          "consent": {"type": "boolean", "description": "Explicit consent for active scanning"}
+        },
+        "required": ["target", "consent"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "subfinder",
+      "description": "Passive subdomain enumeration",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "domain": {"type": "string"},
+          "session_id": {"type": "string"},
+          "consent": {"type": "boolean", "default": false}
+        },
+        "required": ["domain", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "wafw00f",
+      "description": "Web Application Firewall detection",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "nmap",
+      "description": "Port scanning and service detection",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "host": {"type": "string"},
+          "session_id": {"type": "string"},
+          "ports": {"type": "array", "items": {"type": "integer"}, "default": null},
+          "consent": {"type": "boolean", "default": false}
+        },
+        "required": ["host", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "nuclei",
+      "description": "Fast vulnerability scanner with templates",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "sqlmap",
+      "description": "SQL injection detection and exploitation",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"},
+          "params": {"type": "array", "items": {"type": "string"}, "default": null},
+          "consent": {"type": "boolean", "default": false}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "dalfox",
+      "description": "XSS vulnerability scanner",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"},
+          "params": {"type": "array", "items": {"type": "string"}, "default": null},
+          "consent": {"type": "boolean", "default": false}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "ffuf",
+      "description": "Fast web fuzzer for directory/file discovery",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"},
+          "mode": {"type": "string", "enum": ["dirs", "files", "vhosts"], "default": "dirs"},
+          "consent": {"type": "boolean", "default": false}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "sslyze",
+      "description": "TLS/SSL configuration analyzer",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "host": {"type": "string"},
+          "port": {"type": "integer", "default": 443},
+          "session_id": {"type": "string"},
+          "consent": {"type": "boolean", "default": false}
+        },
+        "required": ["host", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "whatweb",
+      "description": "Web technology fingerprinting",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"},
+          "consent": {"type": "boolean", "default": false}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "testssl",
+      "description": "TLS/SSL security testing",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "host": {"type": "string"},
+          "port": {"type": "integer", "default": 443},
+          "session_id": {"type": "string"}
+        },
+        "required": ["host", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "nikto",
+      "description": "Web server vulnerability scanner",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"},
+          "consent": {"type": "boolean", "default": false}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "gobuster",
+      "description": "Directory/file brute forcing",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"},
+          "mode": {"type": "string", "enum": ["dir", "dns", "vhost"], "default": "dir"}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "wfuzz",
+      "description": "Web application fuzzer",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"},
+          "fuzz_param": {"type": "string", "default": "FUZZ"}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "arjun",
+      "description": "HTTP parameter discovery",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "masscan",
+      "description": "Fast port scanner",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "target": {"type": "string"},
+          "session_id": {"type": "string"},
+          "ports": {"type": "string", "default": "0-65535"}
+        },
+        "required": ["target", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "amass",
+      "description": "Advanced subdomain enumeration",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "domain": {"type": "string"},
+          "session_id": {"type": "string"}
+        },
+        "required": ["domain", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "dnsrecon",
+      "description": "DNS enumeration and reconnaissance",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "domain": {"type": "string"},
+          "session_id": {"type": "string"}
+        },
+        "required": ["domain", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "theharvester",
+      "description": "OSINT gathering from public sources",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "domain": {"type": "string"},
+          "session_id": {"type": "string"}
+        },
+        "required": ["domain", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "retire",
+      "description": "JavaScript library vulnerability scanner",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "trufflehog",
+      "description": "Secret and credential scanner",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "target": {"type": "string"},
+          "session_id": {"type": "string"},
+          "scan_type": {"type": "string", "enum": ["filesystem", "git"], "default": "filesystem"}
+        },
+        "required": ["target", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "git_dumper",
+      "description": "Exposed .git directory dumper",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "commix",
+      "description": "Command injection vulnerability scanner",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "corscanner",
+      "description": "CORS misconfiguration scanner",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "jwt_tool",
+      "description": "JWT security testing",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "token": {"type": "string"},
+          "session_id": {"type": "string"},
+          "url": {"type": "string", "default": null}
+        },
+        "required": ["token", "session_id"]
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "graphql_cop",
+      "description": "GraphQL security scanner",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "url": {"type": "string"},
+          "session_id": {"type": "string"}
+        },
+        "required": ["url", "session_id"]
+      },
+      "version": "1.0.0"
+    }
+  ]
+}

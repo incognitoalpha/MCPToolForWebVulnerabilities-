@@ -1,57 +1,545 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>VulnLab - Home</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔓 VulnLab | Security Testing Ground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+  <script src="/static/js/jquery.js"></script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background: #1a1a2e; color: #eee; }
-    .nav { background: #16213e; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-    .nav a { color: #e94560; text-decoration: none; margin-left: 20px; }
-    .nav .brand { font-size: 1.5em; font-weight: bold; color: #e94560; }
-    .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
-    .post-card { background: #16213e; border-radius: 8px; padding: 20px; margin-bottom: 20px; border-left: 4px solid #e94560; }
-    .post-card h2 a { color: #eee; text-decoration: none; }
-    .post-card .meta { color: #888; font-size: 0.9em; margin-top: 5px; }
-    .search-bar { margin-bottom: 30px; }
-    .search-bar form { display: flex; gap: 10px; }
-    .search-bar input { flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #333; background: #0f3460; color: #eee; font-size: 1em; }
-    .search-bar button { padding: 12px 24px; background: #e94560; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-    .warning-banner { background: #e94560; color: #fff; text-align: center; padding: 8px; font-size: 0.85em; }
+    :root {
+      --bg-dark: #0a0b10;
+      --panel-dark: #12131c;
+      --accent-neon: #00f0ff;
+      --accent-pink: #ff007f;
+      --accent-green: #39ff14;
+      --text-main: #e2e8f0;
+      --text-muted: #64748b;
+      --border-color: #27273a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border-color);
+      background-color: rgba(18, 19, 28, 0.8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--accent-neon);
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand span {
+      color: var(--accent-pink);
+      text-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-neon);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent-neon);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-links .btn-logout {
+      color: var(--accent-pink);
+    }
+
+    .nav-links .btn-logout::after {
+      background: var(--accent-pink);
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.05) 0%, rgba(255, 0, 127, 0.05) 100%);
+      border-bottom: 1px solid var(--border-color);
+      padding: 60px 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at center, transparent 40%, var(--bg-dark) 90%);
+      pointer-events: none;
+    }
+
+    .hero-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 900;
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, #fff, #a5b4fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto 30px auto;
+      line-height: 1.6;
+    }
+
+    .banner-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(255, 0, 127, 0.15);
+      border: 1px solid var(--accent-pink);
+      color: var(--accent-pink);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.2);
+    }
+
+    .main-grid {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 30px;
+    }
+
+    @media (max-width: 900px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
+
+    .post-card {
+      background: var(--panel-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .post-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--accent-neon);
+      opacity: 0.8;
+      transition: all 0.3s ease;
+    }
+
+    .post-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0, 240, 255, 0.4);
+      box-shadow: 0 10px 30px rgba(0, 240, 255, 0.05);
+    }
+
+    .post-card:hover::before {
+      width: 6px;
+      box-shadow: 0 0 15px var(--accent-neon);
+    }
+
+    .post-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .post-title a {
+      color: var(--text-main);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .post-title a:hover {
+      color: var(--accent-neon);
+    }
+
+    .post-body {
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+      margin-bottom: 15px;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+      padding-top: 12px;
+    }
+
+    .post-meta span strong {
+      color: #fff;
+    }
+
+    .search-panel {
+      background: var(--panel-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+
+    .search-input-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .cyber-input {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .cyber-input:focus {
+      border-color: var(--accent-neon);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+    }
+
+    .cyber-button {
+      background: var(--accent-neon);
+      color: var(--bg-dark);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cyber-button:hover {
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .sidebar-widget {
+      background: var(--panel-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+
+    .widget-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .vuln-badge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .vuln-badge:hover {
+      background: rgba(0, 240, 255, 0.05);
+      border-color: var(--accent-neon);
+      transform: translateX(4px);
+    }
+
+    .vuln-badge span {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .badge-critical {
+      background: rgba(255, 0, 127, 0.15);
+      color: var(--accent-pink);
+      border: 1px solid var(--accent-pink);
+    }
+
+    .badge-high {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid #f59e0b;
+    }
+
+    .status-panel {
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+      padding-bottom: 8px;
+    }
+
+    .status-value {
+      font-family: monospace;
+      color: var(--accent-green);
+    }
   </style>
 </head>
 <body>
-  <div class="warning-banner">⚠️ DELIBERATELY VULNERABLE - FOR TESTING ONLY ⚠️</div>
-  <nav class="nav">
-    <span class="brand">🔓 VulnLab</span>
+  <header>
+    <div class="header-container">
+      <a href="/" class="brand">🔓 VULN<span>LAB</span></a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/search?q=">Search</a>
+        <a href="/tools/ping">Ping System</a>
+        <a href="/admin">Admin Control</a>
+        <% if (user) { %>
+          <a href="/profile/<%= user.id %>">My Profile</a>
+          <a href="/logout" class="btn-logout">Logout (<%= user.username %>)</a>
+        <% } else { %>
+          <a href="/login">Login</a>
+          <a href="/register">Register</a>
+        <% } %>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero-banner">
+    <span class="banner-badge">Deliberately Vulnerable Environment</span>
+    <h1 class="hero-title">PENETRATION TESTING PLAYGROUND</h1>
+    <p class="hero-subtitle">
+      A sleek cyber-range engineered to simulate high-criticality vulnerabilities for scanning engines and manual security assessments.
+    </p>
+  </section>
+
+  <main class="main-grid">
     <div>
-      <a href="/">Home</a>
-      <a href="/search?q=">Search</a>
-      <a href="/tools/ping">Ping Tool</a>
-      <a href="/admin">Admin</a>
-      <% if (user) { %>
-        <a href="/profile/<%= user.id %>">Profile</a>
-        <a href="/logout">Logout (<%= user.username %>)</a>
-      <% } else { %>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-      <% } %>
-    </div>
-  </nav>
-  <div class="container">
-    <div class="search-bar">
-      <form action="/search" method="GET">
-        <input type="text" name="q" placeholder="Search posts..." value="<%= query %>">
-        <button type="submit">Search</button>
-      </form>
-    </div>
-    <h1 style="margin-bottom: 20px;">Recent Posts</h1>
-    <% posts.forEach(post => { %>
-      <div class="post-card">
-        <h2><a href="/post/<%= post.id %>"><%= post.title %></a></h2>
-        <p style="margin-top: 10px;"><%= post.content.substring(0, 200) %></p>
-        <div class="meta">By <%= post.username %> | <%= post.created_at %></div>
+      <h2 class="section-title">Visual Active Database</h2>
+      
+      <div class="search-panel">
+        <form action="/search" method="GET">
+          <div class="search-input-group">
+            <input type="text" name="q" class="cyber-input" placeholder="Search parameters (Reflected XSS / SQLi)..." value="<%= query %>">
+            <button type="submit" class="cyber-button">Search</button>
+          </div>
+        </form>
       </div>
-    <% }); %>
-  </div>
+
+      <% posts.forEach(post => { %>
+        <article class="post-card">
+          <h3 class="post-title"><%= post.title %></h3>
+          <p class="post-body"><%= post.content %></p>
+          <div class="post-meta">
+            <span>Author: <strong><%= post.username %></strong></span>
+            <span>Created: <strong><%= post.created_at %></strong></span>
+          </div>
+        </article>
+      <% }); %>
+    </div>
+
+    <div>
+      <div class="sidebar-widget">
+        <h3 class="widget-title">🚨 Target Vulnerability Suite</h3>
+        
+        <a href="/login" class="vuln-badge">
+          SQL Injection (Concatenation)
+          <span class="badge-critical">CRITICAL</span>
+        </a>
+
+        <a href="/profile/1" class="vuln-badge">
+          IDOR & Secret Leaks
+          <span class="badge-high">HIGH</span>
+        </a>
+
+        <a href="/tools/ping" class="vuln-badge">
+          Command Injection (Ping Tool)
+          <span class="badge-critical">CRITICAL</span>
+        </a>
+
+        <a href="/vuln/ssrf?url=http://127.0.0.1:3001" class="vuln-badge">
+          Server Side Request Forgery
+          <span class="badge-high">HIGH</span>
+        </a>
+
+        <a href="/vuln/ssti?tpl=<%= encodeURIComponent('<' + '%= 7 * 7 %' + '>') %>" class="vuln-badge">
+          Server-Side Template Injection
+          <span class="badge-high">HIGH</span>
+        </a>
+
+        <a href="/vuln/blind-sqli?id=1" class="vuln-badge">
+          Blind SQL Injection
+          <span class="badge-high">HIGH</span>
+        </a>
+
+        <a href="/vuln/.env" class="vuln-badge">
+          Environmental Secret Disclosure
+          <span class="badge-high">HIGH</span>
+        </a>
+
+        <a href="/vuln/secret" class="vuln-badge">
+          JWT / Sensitive Credentials
+          <span class="badge-high">HIGH</span>
+        </a>
+
+        <a href="/vuln/jwt?token=eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VyIjoiYWRtaW4ifQ." class="vuln-badge">
+          JWT None-Algorithm Bypass
+          <span class="badge-critical">CRITICAL</span>
+        </a>
+
+        <a href="/graphql" class="vuln-badge">
+          GraphQL Introspection Leak
+          <span class="badge-high">HIGH</span>
+        </a>
+
+        <a href="/.git/config" class="vuln-badge">
+          Exposed Git Configurations
+          <span class="badge-high">HIGH</span>
+        </a>
+
+        <a href="/robots.txt" class="vuln-badge">
+          Robots.txt Crawl Directory Leak
+          <span class="badge-high">HIGH</span>
+        </a>
+
+        <a href="/security.txt" class="vuln-badge">
+          Security.txt Exposure
+          <span class="badge-high">HIGH</span>
+        </a>
+      </div>
+
+      <div class="sidebar-widget">
+        <h3 class="widget-title">⚙️ Lab Diagnostics</h3>
+        <div class="status-panel">
+          <div class="status-item">
+            <span>Port Binding</span>
+            <span class="status-value">0.0.0.0</span>
+          </div>
+          <div class="status-item">
+            <span>Database</span>
+            <span class="status-value">In-Memory SQLite</span>
+          </div>
+          <div class="status-item">
+            <span>X-Powered-By</span>
+            <span class="status-value">Express 5.0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </body>
 </html>
