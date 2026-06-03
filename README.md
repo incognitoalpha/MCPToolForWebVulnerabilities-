@@ -105,6 +105,4 @@ pentest-mcp/
 - Unauthorized testing is illegal and unethical.
 - The `consent` flag is a mandatory requirement for all active scanning tools.
 
----
 
-**Built with** 🐍 Python · 🧠 Gemini AI · 🛡️ MCP
