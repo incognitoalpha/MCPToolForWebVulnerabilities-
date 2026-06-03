@@ -1,4 +1,4 @@
-# 🛡️ PenTest MCP
+#  PenTest MCP
 
 **AI-Powered Security Scanning via Model Context Protocol (MCP)**
 
@@ -10,7 +10,7 @@ PenTest MCP is a specialized MCP server that exposes 25+ professional security t
 
 ---
 
-## 🚀 Quick Start (Claude Desktop)
+##  Quick Start (Claude Desktop)
 
 1. **Install dependencies:**
    ```bash
@@ -51,7 +51,7 @@ PenTest MCP is a specialized MCP server that exposes 25+ professional security t
 
 ---
 
-## 🛠️ Supported Tools (25)
+##  Supported Tools (25)
 
 | Category | Tools |
 |----------|-------|
@@ -63,7 +63,7 @@ PenTest MCP is a specialized MCP server that exposes 25+ professional security t
 
 ---
 
-## 🔧 Installation & Setup
+##  Installation & Setup
 
 ### Prerequisites
 - Python 3.11+
@@ -79,7 +79,7 @@ GEMINI_MODEL=gemini-flash-lite-latest
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 pentest-mcp/
@@ -98,7 +98,7 @@ pentest-mcp/
 
 ---
 
-## 🔒 Security Notice
+##  Security Notice
 
 **This tool is for authorized security testing only.**
 - Always obtain explicit written permission before scanning any target.
